@@ -1,0 +1,197 @@
+<title>Simulados de Banco de Dados</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: coluna única estreita, abas no topo, questões em sequência com feedback imediato. */
+:root{
+  --bg:#F3F5F7; --surface:#FFFFFF; --fg:#16222B; --muted:#5B6B77; --line:#D8DFE5;
+  --accent:#0B6E78; --accent-soft:#DDF0F1; --ok:#1B7F4B; --ok-soft:#DFF3E7; --bad:#B3261E; --bad-soft:#FBE4E2;
+  --code-bg:#EAEFF2;
+  --f-display:'Space Grotesk','Inter',system-ui,sans-serif; --f-body:'Inter',system-ui,sans-serif; --f-mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F171D; --surface:#17222A; --fg:#E7EEF2; --muted:#9AAAB5; --line:#2A3a45;
+  --accent:#4FC3CE; --accent-soft:#12363B; --ok:#5FD08F; --ok-soft:#14301F; --bad:#FF8A80; --bad-soft:#3A1B19; --code-bg:#0F171D; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F171D; --surface:#17222A; --fg:#E7EEF2; --muted:#9AAAB5; --line:#2A3a45;
+  --accent:#4FC3CE; --accent-soft:#12363B; --ok:#5FD08F; --ok-soft:#14301F; --bad:#FF8A80; --bad-soft:#3A1B19; --code-bg:#0F171D; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--f-body);padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
+h1{font-size:clamp(1.7rem,5vw,2.3rem);line-height:1.15}
+.sub{color:var(--muted);margin:8px 0 0;max-width:60ch}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{font:500 .95rem var(--f-body);color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 14px;cursor:pointer;text-align:left}
+.tab small{display:block;color:var(--muted);font-weight:400;font-size:.78rem}
+.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.tab[aria-selected="true"] small{color:#e5f6f7}
+:root[data-theme="dark"] .tab[aria-selected="true"],:root:not([data-theme="light"]) .tab[aria-selected="true"]{color:#06262a}
+:root[data-theme="dark"] .tab[aria-selected="true"] small,:root:not([data-theme="light"]) .tab[aria-selected="true"] small{color:#0a3d43}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.score{font-family:var(--f-display);font-weight:700;font-variant-numeric:tabular-nums}
+.btn{font:500 .9rem var(--f-body);color:var(--accent);background:transparent;border:1px solid var(--accent);border-radius:8px;padding:8px 12px;cursor:pointer}
+.btn:hover{background:var(--accent-soft)}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.q .n{font:600 .8rem var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.q p{margin:0}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{font:inherit;text-align:left;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer;display:flex;gap:10px;min-width:0}
+.opt .l{font-weight:600;color:var(--muted);flex:none;width:1.2em}
+.opt:hover:not([disabled]){border-color:var(--accent)}
+.opt[disabled]{cursor:default}
+.opt.ok{background:var(--ok-soft);border-color:var(--ok)}
+.opt.bad{background:var(--bad-soft);border-color:var(--bad)}
+.fb{font-size:.92rem;border-left:3px solid var(--accent);padding:2px 0 2px 12px;color:var(--fg)}
+.fb b{font-weight:600}
+pre,code{font-family:var(--f-mono);font-size:.85rem}
+pre{background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:12px;margin:0;overflow-x:auto;white-space:pre}
+.dis{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+details summary{cursor:pointer;color:var(--accent);font-weight:500}
+details .ans{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+details ul{margin:0;padding-left:1.2em}
+h2.sec{font-size:1.2rem;margin-top:8px}
+.foot{color:var(--muted);font-size:.85rem}
+@media (prefers-reduced-motion:no-preference){.opt{transition:border-color .15s,background .15s}}
+</style>
+
+<main>
+  <header>
+    <h1>Simulados de Banco de Dados</h1>
+    <p class="sub">Três simulados para revisar a matéria: 8 questões objetivas com resposta na hora e 2 dissertativas com gabarito em cada um. As opções mudam de ordem a cada tentativa.</p>
+  </header>
+  <div class="tabs" role="tablist" id="tabs"></div>
+  <div class="bar"><span class="score" id="score" aria-live="polite"></span><button class="btn" id="redo" type="button">Refazer simulado</button></div>
+  <section id="objetivas" style="display:flex;flex-direction:column;gap:16px"></section>
+  <h2 class="sec">Questões dissertativas</h2>
+  <section id="diss" style="display:flex;flex-direction:column;gap:16px"></section>
+  <p class="foot">Os exemplos usam um restaurante com as tabelas pedido, itens_pedido, produto e atendente. O gabarito das dissertativas traz os pontos que a resposta precisa ter, não um texto para decorar.</p>
+</main>
+
+<script>
+const SIMS = {
+  basico: {
+    nome: "Básico", desc: "Conceitos de base",
+    obj: [
+      {q:"O que é uma chave primária (PK)?", o:["Uma coluna que identifica cada linha da tabela de forma única","Uma coluna que pode repetir valores","Uma senha do banco de dados","Um tipo de consulta"], c:0, e:"A PK não repete e não pode ser nula. Exemplo: o id de cada pedido."},
+      {q:"O que é uma chave estrangeira (FK)?", o:["Uma coluna que liga uma tabela à chave primária de outra","Uma tabela guardada em outro servidor","Uma coluna que guarda só números","Uma cópia de segurança"], c:0, e:"A FK cria a ligação entre tabelas. Exemplo: o pedido guarda o id do atendente que o registrou."},
+      {q:"O que significa a sigla DER?", o:["Diagrama Entidade-Relacionamento","Dados Estruturados Relacionais","Documento de Entrega de Requisitos","Dicionário de Esquemas Relacionais"], c:0, e:"O DER é o desenho do banco: entidades (futuras tabelas), atributos e relacionamentos."},
+      {q:"Qual comando SQL busca dados de uma tabela?", o:["SELECT","INSERT","DELETE","CREATE"], c:0, e:"SELECT consulta. INSERT insere, UPDATE altera, DELETE apaga linhas e CREATE cria objetos como tabelas."},
+      {q:"Qual função soma os valores de uma coluna?", o:["SUM()","COUNT()","MAX()","AVG()"], c:0, e:"SUM soma, COUNT conta linhas, MAX dá o maior valor e AVG calcula a média."},
+      {q:"Para que serve o JOIN?", o:["Juntar dados de duas ou mais tabelas numa consulta","Apagar uma tabela","Criar um backup","Ordenar os resultados"], c:0, e:"O JOIN usa a relação entre PK e FK para trazer dados de tabelas diferentes, como pedido e atendente."},
+      {q:"O que o GROUP BY faz?", o:["Agrupa linhas com o mesmo valor, para calcular totais por grupo","Apaga linhas repetidas da tabela","Cria um grupo de usuários","Muda o nome de uma coluna"], c:0, e:"Exemplo: SUM(valor) com GROUP BY setor mostra o total vendido por setor."},
+      {q:"Qual comando desfaz uma alteração feita numa transação que ainda não foi confirmada?", o:["ROLLBACK","COMMIT","SELECT","DROP"], c:0, e:"ROLLBACK desfaz tudo da transação aberta; COMMIT confirma."}
+    ],
+    dis: [
+      {q:"Explique com suas palavras o que são chave primária e chave estrangeira. Dê um exemplo de cada num sistema de restaurante.", a:["<b>PK:</b> identifica cada linha de forma única, sem repetir e sem nulo. Exemplo: o id do pedido.","<b>FK:</b> coluna que referencia a PK de outra tabela e liga as duas. Exemplo: o pedido guarda o id do atendente que o registrou.","Mostrar o efeito: a FK impede registrar um pedido com atendente que não existe."]},
+      {q:"O que é normalização e por que ela é importante?", a:["Organizar as tabelas para não repetir dados, em etapas chamadas formas normais (1FN, 2FN e 3FN).","Evita dados duplicados e erros ao inserir, alterar ou apagar (anomalias).","Exemplo: em vez de repetir o nome do atendente em todo pedido, criar a tabela atendente e guardar só a FK no pedido."]}
+    ]
+  },
+  intermediario: {
+    nome: "Intermediário", desc: "Modelagem e integridade",
+    obj: [
+      {q:"Na tabela itens_pedido, a coluna id_pedido referencia a tabela pedido. Qual é o papel dessa coluna?", o:["Chave estrangeira, que garante que o item pertença a um pedido existente","Chave primária simples da tabela itens_pedido","Restrição CHECK que valida o valor do pedido","Índice usado apenas para acelerar consultas"], c:0, e:"A FK liga a tabela filha à tabela pai e impede registrar um item de um pedido que não existe. Isso é integridade referencial."},
+      {q:"Um pedido pode ter vários produtos, e um produto pode estar em vários pedidos. Como esse relacionamento N:N é implementado no modelo lógico?", o:["Criando uma tabela associativa com as chaves dos dois lados","Colocando uma lista de produtos dentro da tabela pedido","Colocando a chave do pedido na tabela produto","Fundindo pedido e produto numa única tabela"], c:0, e:"Todo N:N vira uma tabela associativa (aqui, itens_pedido) com FKs para as duas tabelas, podendo ter atributos próprios, como quantidade e preço."},
+      {q:"Uma tabela está na 3ª Forma Normal (3FN) quando:", o:["Está na 2FN e não tem dependências transitivas entre atributos não-chave","Todos os campos são do tipo texto","Não possui chave estrangeira","Tem apenas uma coluna na chave primária"], c:0, e:"1FN: valores atômicos. 2FN: sem dependência parcial da chave. 3FN: sem dependência transitiva, ou seja, atributo não-chave não depende de outro não-chave."},
+      {q:"Qual é a principal diferença entre o DER (modelo conceitual) e o modelo lógico?", o:["O DER é independente de SGBD e mostra entidades e relacionamentos; o lógico traduz isso em tabelas, colunas, chaves e restrições","O DER já define tipos de dados e índices; o lógico não","Os dois são idênticos, mudando só o nome","O modelo lógico é o script de INSERT"], c:0, e:"O conceitual descreve o negócio; o lógico mapeia para o modelo relacional (tabelas, PK, FK); o físico define tipos e detalhes do SGBD."},
+      {q:"Você quer listar todos os produtos, inclusive os que nunca foram pedidos. Qual junção usar entre produto e itens_pedido?", o:["LEFT JOIN partindo de produto","INNER JOIN","CROSS JOIN","UNION entre as duas tabelas"], c:0, e:"O LEFT JOIN mantém todas as linhas da tabela da esquerda (produto), com NULL onde não há itens. Depois, WHERE itens_pedido.id IS NULL isola os produtos sem pedido."},
+      {q:"Qual a diferença entre WHERE e HAVING?", o:["WHERE filtra linhas antes do agrupamento; HAVING filtra grupos depois do GROUP BY","São sinônimos","HAVING só funciona com UPDATE","WHERE filtra grupos; HAVING filtra linhas"], c:0, e:"Para filtrar pelo resultado de uma agregação, como SUM(valor) > 1000, usa-se HAVING. Condições sobre colunas simples vão no WHERE."},
+      {q:"Com a FK em NO ACTION (ou RESTRICT), o que acontece ao tentar excluir um pedido que já tem itens_pedido?", o:["O banco recusa a exclusão com erro de integridade","O pedido e os itens são apagados juntos","O pedido é apagado e os itens ficam com id_pedido NULL","O MySQL ignora o comando sem avisar"], c:0, e:"NO ACTION impede apagar o registro pai enquanto houver filhos. Para apagar, é preciso remover os itens antes, ou definir a FK com ON DELETE CASCADE."},
+      {q:"Você roda um UPDATE dentro de uma transação e percebe que errou a condição. Que propriedade ACID permite desfazer tudo com ROLLBACK?", o:["Atomicidade","Isolamento","Durabilidade","Consistência de índice"], c:0, e:"Atomicidade: a transação é tudo ou nada. ROLLBACK desfaz o que ainda não recebeu COMMIT."}
+    ],
+    dis: [
+      {q:"Explique o que é normalização e descreva a 1FN, a 2FN e a 3FN. Dê um exemplo de tabela de restaurante que violaria uma delas e mostre como corrigir.", a:["<b>Objetivo:</b> reduzir redundância e evitar anomalias de inserção, atualização e exclusão.","<b>1FN:</b> valores atômicos, sem campos repetidos nem listas numa célula.","<b>2FN:</b> está na 1FN e nenhum atributo depende só de parte de uma chave composta.","<b>3FN:</b> está na 2FN e nenhum atributo não-chave depende de outro não-chave (dependência transitiva).","<b>Exemplo:</b> a tabela pedido com uma coluna \"produtos\" contendo uma lista viola a 1FN. Correção: criar itens_pedido, com uma linha por produto do pedido.","<b>Outro exemplo:</b> guardar o nome do atendente dentro de pedido gera dependência transitiva. Correção: criar a tabela atendente e deixar só a FK no pedido."]},
+      {q:"Explique como a integridade dos dados é garantida num banco relacional. Cite PK, FK, CHECK e NOT NULL, com um exemplo de cada. Depois explique por que usar transação com ROLLBACK é útil em UPDATE e DELETE.", a:["<b>PK:</b> identifica cada registro de forma única. Exemplo: id do pedido.","<b>FK:</b> impede registrar um item de um pedido inexistente ou apagar um pedido que ainda tem itens (em NO ACTION).","<b>CHECK:</b> barra valores inválidos. Exemplo: quantidade maior que zero.","<b>NOT NULL:</b> obriga o preenchimento de campos essenciais.","<b>Transação:</b> permite testar a alteração e desfazê-la com ROLLBACK se algo sair errado (atomicidade), ou confirmar com COMMIT."]}
+    ]
+  },
+  sql: {
+    nome: "SQL", desc: "Consultas e comandos",
+    obj: [
+      {q:"Qual cláusula ordena o resultado de uma consulta do maior para o menor valor?", o:["ORDER BY valor DESC","GROUP BY valor DESC","SORT valor DOWN","HAVING valor DESC"], c:0, e:"ORDER BY ordena. ASC é crescente (padrão) e DESC é decrescente."},
+      {q:"Qual a diferença entre COUNT(*) e COUNT(coluna)?", o:["COUNT(*) conta todas as linhas; COUNT(coluna) ignora as linhas em que a coluna é NULL","São idênticos em qualquer caso","COUNT(*) ignora NULL; COUNT(coluna) conta tudo","COUNT(coluna) soma os valores da coluna"], c:0, e:"COUNT(*) conta linhas. COUNT(coluna) conta só os valores não nulos dessa coluna."},
+      {q:"Como filtrar corretamente as linhas em que data_cancelamento não foi preenchida?", o:["WHERE data_cancelamento IS NULL","WHERE data_cancelamento = NULL","WHERE data_cancelamento = ''","WHERE data_cancelamento == 0"], c:0, e:"NULL não é um valor, é ausência de valor. Comparações com = NULL nunca são verdadeiras; use IS NULL ou IS NOT NULL."},
+      {q:"O que acontece ao executar UPDATE produto SET preco = 10; sem cláusula WHERE?", o:["Todas as linhas da tabela recebem preco = 10","Nenhuma linha é alterada","Só a primeira linha é alterada","O MySQL pede a condição e cancela o comando"], c:0, e:"Sem WHERE, o UPDATE atinge a tabela inteira. Por isso é boa prática testar com SELECT antes e usar transação com ROLLBACK."},
+      {q:"O que retorna um INNER JOIN entre pedido e atendente?", o:["Somente as linhas que têm correspondência nas duas tabelas","Todas as linhas de pedido, com ou sem atendente","Todas as linhas das duas tabelas","O produto cartesiano das duas tabelas"], c:0, e:"INNER JOIN traz só o que casa nas duas tabelas. Para manter linhas sem correspondência, usa-se LEFT JOIN."},
+      {q:"Qual consulta lista os pedidos com valor acima da média?", o:["SELECT * FROM pedido WHERE valor > (SELECT AVG(valor) FROM pedido);","SELECT * FROM pedido WHERE valor > AVG(valor);","SELECT * FROM pedido HAVING valor > AVG;","SELECT AVG(valor) FROM pedido WHERE valor > pedido;"], c:0, e:"A média vem de uma subconsulta. Funções de agregação não podem ser usadas direto no WHERE."},
+      {q:"Para que serve o DISTINCT?", o:["Remover linhas repetidas do resultado","Ordenar o resultado","Limitar o número de linhas","Apagar duplicatas da tabela"], c:0, e:"SELECT DISTINCT setor FROM produto lista cada setor uma só vez. Ele age no resultado da consulta, não apaga nada da tabela."},
+      {q:"Qual consulta mostra só os atendentes que venderam mais de 1000 no total?", o:["SELECT id_atendente, SUM(valor) FROM pedido GROUP BY id_atendente HAVING SUM(valor) > 1000;","SELECT id_atendente, SUM(valor) FROM pedido WHERE SUM(valor) > 1000 GROUP BY id_atendente;","SELECT id_atendente FROM pedido HAVING valor > 1000;","SELECT id_atendente, SUM(valor) FROM pedido GROUP BY SUM(valor) > 1000;"], c:0, e:"O filtro sobre o total precisa vir depois do agrupamento, então usa HAVING. WHERE não aceita SUM()."}
+    ],
+    dis: [
+      {q:"Explique a diferença entre INNER JOIN e LEFT JOIN. Dê um exemplo de consulta em que o LEFT JOIN é necessário.", a:["<b>INNER JOIN:</b> só retorna linhas com correspondência nas duas tabelas.","<b>LEFT JOIN:</b> retorna todas as linhas da tabela da esquerda e preenche com NULL o lado direito quando não há correspondência.","<b>Quando usar:</b> para achar o que não tem relação, como produtos que nunca foram pedidos.","<pre>SELECT p.nome\nFROM produto p\nLEFT JOIN itens_pedido i ON i.id_produto = p.id\nWHERE i.id IS NULL;</pre>"]},
+      {q:"Escreva uma consulta que mostre o total vendido por setor, somente dos setores com total acima de 5000, do maior para o menor. Explique por que ela usa HAVING e não WHERE.", a:["<pre>SELECT s.nome, SUM(i.quantidade * i.preco_unitario) AS total\nFROM itens_pedido i\nJOIN produto p ON p.id = i.id_produto\nJOIN setor s ON s.id = p.id_setor\nGROUP BY s.nome\nHAVING SUM(i.quantidade * i.preco_unitario) > 5000\nORDER BY total DESC;</pre>","<b>Por que HAVING:</b> o filtro é sobre o resultado de uma agregação (a soma), que só existe depois do GROUP BY. O WHERE roda antes do agrupamento e não enxerga o SUM().","Os nomes das tabelas e colunas podem variar; o que se avalia é a estrutura: JOINs, GROUP BY, HAVING e ORDER BY."]}
+    ]
+  }
+};
+
+const $ = (s) => document.querySelector(s);
+const letters = "ABCD";
+let current = "basico", answered = 0, correct = 0;
+
+function shuffle(a){ a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function el(tag, cls, text){ const e=document.createElement(tag); if(cls) e.className=cls; if(text!==undefined) e.textContent=text; return e; }
+function isCode(t){ return /^SELECT |^UPDATE /.test(t); }
+
+function updateScore(total){
+  $("#score").textContent = `Acertos: ${correct} de ${answered} respondidas (${total} no total)`;
+}
+
+function renderSim(id){
+  current = id; answered = 0; correct = 0;
+  const sim = SIMS[id];
+  const box = $("#objetivas"); box.replaceChildren();
+  updateScore(sim.obj.length);
+  sim.obj.forEach((item, qi) => {
+    const card = el("article","q");
+    card.appendChild(el("span","n",`Questão ${qi+1} de ${sim.obj.length}`));
+    card.appendChild(el("p",null,item.q));
+    const opts = el("div","opts");
+    const fb = el("div","fb"); fb.hidden = true;
+    const order = shuffle(item.o.map((t,i)=>({t, ok:i===item.c})));
+    const btns = [];
+    order.forEach((o, oi) => {
+      const b = el("button","opt"); b.type="button";
+      b.appendChild(el("span","l",letters[oi]));
+      const txt = el(isCode(o.t)?"code":"span",null,o.t); txt.style.minWidth="0"; txt.style.overflowWrap="anywhere";
+      b.appendChild(txt);
+      b.addEventListener("click", () => {
+        btns.forEach((x,xi)=>{ x.disabled=true; if(order[xi].ok) x.classList.add("ok"); });
+        if(!o.ok) b.classList.add("bad");
+        answered++; if(o.ok) correct++;
+        fb.replaceChildren(el("b",null, o.ok ? "Certo. " : "Não foi essa. "), document.createTextNode(item.e));
+        fb.hidden = false; updateScore(sim.obj.length);
+      });
+      btns.push(b); opts.appendChild(b);
+    });
+    card.appendChild(opts); card.appendChild(fb); box.appendChild(card);
+  });
+  const dbox = $("#diss"); dbox.replaceChildren();
+  sim.dis.forEach((d, di) => {
+    const card = el("article","dis");
+    card.appendChild(el("span","n",`Dissertativa ${di+1}`));
+    card.lastChild.style.cssText="font:600 .8rem var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)";
+    card.appendChild(el("p",null,d.q)).style.margin="0";
+    const det = el("details"); det.appendChild(el("summary",null,"Ver pontos da resposta esperada"));
+    const ans = el("div","ans");
+    const ul = el("ul");
+    d.a.forEach(h => { if(h.startsWith("<pre>")){ ans.appendChild(el("pre",null,h.replace(/<\/?pre>/g,"").replace(/&gt;/g,">"))); } else { const li=el("li"); li.innerHTML=h; ul.appendChild(li);} });
+    if(ul.children.length) ans.prepend(ul);
+    det.appendChild(ans); card.appendChild(det); dbox.appendChild(card);
+  });
+  document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.id===id)));
+  try{ history.replaceState(null,"","#"+id); }catch(e){}
+}
+
+const tabs = $("#tabs");
+Object.entries(SIMS).forEach(([id, s], i) => {
+  const b = el("button","tab"); b.type="button"; b.dataset.id=id; b.setAttribute("role","tab");
+  b.appendChild(document.createTextNode(`Simulado ${i+1}: ${s.nome}`));
+  b.appendChild(el("small",null,s.desc));
+  b.addEventListener("click", () => { renderSim(id); window.scrollTo({top:0}); });
+  tabs.appendChild(b);
+});
+$("#redo").addEventListener("click", () => { renderSim(current); window.scrollTo({top:0}); });
+window.addEventListener("hashchange", () => { const h=location.hash.slice(1); if(SIMS[h] && h!==current) renderSim(h); });
+renderSim(SIMS[location.hash.slice(1)] ? location.hash.slice(1) : "basico");
+</script>
