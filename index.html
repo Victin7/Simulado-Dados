@@ -1,5 +1,9 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Simulados de Banco de Dados</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
@@ -17,6 +21,7 @@
   --bg:#0F171D; --surface:#17222A; --fg:#E7EEF2; --muted:#9AAAB5; --line:#2A3a45;
   --accent:#4FC3CE; --accent-soft:#12363B; --ok:#5FD08F; --ok-soft:#14301F; --bad:#FF8A80; --bad-soft:#3A1B19; --code-bg:#0F171D; color-scheme:dark}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--f-body);padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 main{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
 h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
@@ -49,18 +54,26 @@ h1{font-size:clamp(1.7rem,5vw,2.3rem);line-height:1.15}
 pre,code{font-family:var(--f-mono);font-size:.85rem}
 pre{background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:12px;margin:0;overflow-x:auto;white-space:pre}
 .dis{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
-details summary{cursor:pointer;color:var(--accent);font-weight:500}
-details .ans{margin-top:10px;display:flex;flex-direction:column;gap:8px}
-details ul{margin:0;padding-left:1.2em}
+textarea{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;width:100%;resize:vertical;min-height:8em}
+textarea:focus-visible{border-color:var(--accent)}
+.ans{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:12px}
+.ans .hint{margin:0;color:var(--muted);font-size:.9rem}
+.chk{display:flex;flex-direction:column;gap:8px}
+.chk label{display:flex;gap:10px;align-items:flex-start;cursor:pointer;min-width:0}
+.chk input{margin-top:.35em;flex:none;accent-color:var(--accent);width:1.1em;height:1.1em}
+.chk span{min-width:0;overflow-wrap:anywhere}
+.ans .res{margin:0;font-family:var(--f-display);font-weight:700;color:var(--accent)}
 h2.sec{font-size:1.2rem;margin-top:8px}
 .foot{color:var(--muted);font-size:.85rem}
 @media (prefers-reduced-motion:no-preference){.opt{transition:border-color .15s,background .15s}}
 </style>
+</head>
+<body>
 
 <main>
   <header>
     <h1>Simulados de Banco de Dados</h1>
-    <p class="sub">Três simulados para revisar a matéria: 8 questões objetivas com resposta na hora e 2 dissertativas com gabarito em cada um. As opções mudam de ordem a cada tentativa.</p>
+    <p class="sub">Três simulados para revisar a matéria: 8 questões objetivas com resposta na hora e 2 dissertativas em cada um, que você escreve e depois confere com os pontos esperados. As opções mudam de ordem a cada tentativa.</p>
   </header>
   <div class="tabs" role="tablist" id="tabs"></div>
   <div class="bar"><span class="score" id="score" aria-live="polite"></span><button class="btn" id="redo" type="button">Refazer simulado</button></div>
@@ -172,12 +185,27 @@ function renderSim(id){
     card.appendChild(el("span","n",`Dissertativa ${di+1}`));
     card.lastChild.style.cssText="font:600 .8rem var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)";
     card.appendChild(el("p",null,d.q)).style.margin="0";
-    const det = el("details"); det.appendChild(el("summary",null,"Ver pontos da resposta esperada"));
-    const ans = el("div","ans");
-    const ul = el("ul");
-    d.a.forEach(h => { if(h.startsWith("<pre>")){ ans.appendChild(el("pre",null,h.replace(/<\/?pre>/g,"").replace(/&gt;/g,">"))); } else { const li=el("li"); li.innerHTML=h; ul.appendChild(li);} });
-    if(ul.children.length) ans.prepend(ul);
-    det.appendChild(ans); card.appendChild(det); dbox.appendChild(card);
+    const ta = document.createElement("textarea");
+    ta.id = `resp-${current}-${di}`; ta.rows = 7; ta.placeholder = "Escreva sua resposta aqui antes de ver o gabarito.";
+    ta.setAttribute("aria-label", `Resposta da dissertativa ${di+1}`);
+    card.appendChild(ta);
+    const btn = el("button","btn","Ver gabarito e conferir"); btn.type="button"; btn.style.alignSelf="flex-start";
+    const ans = el("div","ans"); ans.hidden = true;
+    const pts = d.a.filter(h => !h.startsWith("<pre>"));
+    ans.appendChild(el("p","hint","Compare com a sua resposta e marque os pontos que você cobriu."));
+    const list = el("div","chk");
+    const result = el("p","res");
+    const upd = () => { const n = list.querySelectorAll("input:checked").length; result.textContent = `Você cobriu ${n} de ${pts.length} pontos.`; };
+    pts.forEach((h, pi) => {
+      const lab = el("label"); const cb = document.createElement("input"); cb.type="checkbox"; cb.id=`pt-${current}-${di}-${pi}`;
+      cb.addEventListener("change", upd);
+      const span = el("span"); span.innerHTML = h; lab.append(cb, span); list.appendChild(lab);
+    });
+    ans.appendChild(list);
+    d.a.filter(h => h.startsWith("<pre>")).forEach(h => ans.appendChild(el("pre",null,h.replace(/<\/?pre>/g,""))));
+    ans.appendChild(result); upd();
+    btn.addEventListener("click", () => { ans.hidden = !ans.hidden; btn.textContent = ans.hidden ? "Ver gabarito e conferir" : "Esconder gabarito"; });
+    card.append(btn, ans); dbox.appendChild(card);
   });
   document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.id===id)));
   try{ history.replaceState(null,"","#"+id); }catch(e){}
@@ -195,3 +223,6 @@ $("#redo").addEventListener("click", () => { renderSim(current); window.scrollTo
 window.addEventListener("hashchange", () => { const h=location.hash.slice(1); if(SIMS[h] && h!==current) renderSim(h); });
 renderSim(SIMS[location.hash.slice(1)] ? location.hash.slice(1) : "basico");
 </script>
+
+</body>
+</html>

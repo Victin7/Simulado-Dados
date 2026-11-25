@@ -10,7 +10,7 @@ Simulados de Banco de Dados para estudar para a prova. Abra o `index.html` no na
 | 2. Intermediário | Tabela associativa, normalização (1FN a 3FN), DER x modelo lógico, WHERE x HAVING, integridade referencial e transações |
 | 3. SQL | ORDER BY, COUNT, IS NULL, UPDATE sem WHERE, INNER e LEFT JOIN, subconsulta, DISTINCT e HAVING |
 
-Cada simulado tem 8 questões objetivas, com correção e explicação na hora, e 2 dissertativas com os pontos da resposta esperada. As alternativas mudam de ordem a cada tentativa.
+Cada simulado tem 8 questões objetivas, com correção e explicação na hora, e 2 dissertativas, que o aluno escreve e depois confere marcando os pontos da resposta esperada. As alternativas mudam de ordem a cada tentativa.
 
 Os exemplos usam um restaurante com as tabelas `pedido`, `itens_pedido`, `produto` e `atendente`.
 
