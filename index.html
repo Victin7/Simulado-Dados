@@ -7,63 +7,71 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: coluna única estreita, abas no topo, questões em sequência com feedback imediato. */
+/* Layout: coluna única estreita; abas no topo; cada questão é um cartão com cenário, alternativas A-E e feedback por alternativa. */
 :root{
   --bg:#F3F5F7; --surface:#FFFFFF; --fg:#16222B; --muted:#5B6B77; --line:#D8DFE5;
   --accent:#0B6E78; --accent-soft:#DDF0F1; --ok:#1B7F4B; --ok-soft:#DFF3E7; --bad:#B3261E; --bad-soft:#FBE4E2;
-  --code-bg:#EAEFF2;
+  --code-bg:#EAEFF2; --on-accent:#FFFFFF;
   --f-display:'Space Grotesk','Inter',system-ui,sans-serif; --f-body:'Inter',system-ui,sans-serif; --f-mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0F171D; --surface:#17222A; --fg:#E7EEF2; --muted:#9AAAB5; --line:#2A3a45;
-  --accent:#4FC3CE; --accent-soft:#12363B; --ok:#5FD08F; --ok-soft:#14301F; --bad:#FF8A80; --bad-soft:#3A1B19; --code-bg:#0F171D; color-scheme:dark}}
+  --bg:#0F171D; --surface:#17222A; --fg:#E7EEF2; --muted:#9AAAB5; --line:#2A3A45;
+  --accent:#4FC3CE; --accent-soft:#12363B; --ok:#5FD08F; --ok-soft:#14301F; --bad:#FF8A80; --bad-soft:#3A1B19; --code-bg:#0F171D; --on-accent:#06262A; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0F171D; --surface:#17222A; --fg:#E7EEF2; --muted:#9AAAB5; --line:#2A3a45;
-  --accent:#4FC3CE; --accent-soft:#12363B; --ok:#5FD08F; --ok-soft:#14301F; --bad:#FF8A80; --bad-soft:#3A1B19; --code-bg:#0F171D; color-scheme:dark}
+  --bg:#0F171D; --surface:#17222A; --fg:#E7EEF2; --muted:#9AAAB5; --line:#2A3A45;
+  --accent:#4FC3CE; --accent-soft:#12363B; --ok:#5FD08F; --ok-soft:#14301F; --bad:#FF8A80; --bad-soft:#3A1B19; --code-bg:#0F171D; --on-accent:#06262A; color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--f-body);padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-main{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--f-body);margin:0;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
 h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
 h1{font-size:clamp(1.7rem,5vw,2.3rem);line-height:1.15}
-.sub{color:var(--muted);margin:8px 0 0;max-width:60ch}
+.sub{color:var(--muted);margin:8px 0 0;max-width:62ch}
 .tabs{display:flex;gap:8px;flex-wrap:wrap}
 .tab{font:500 .95rem var(--f-body);color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 14px;cursor:pointer;text-align:left}
 .tab small{display:block;color:var(--muted);font-weight:400;font-size:.78rem}
-.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
-.tab[aria-selected="true"] small{color:#e5f6f7}
-:root[data-theme="dark"] .tab[aria-selected="true"],:root:not([data-theme="light"]) .tab[aria-selected="true"]{color:#06262a}
-:root[data-theme="dark"] .tab[aria-selected="true"] small,:root:not([data-theme="light"]) .tab[aria-selected="true"] small{color:#0a3d43}
+.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.tab[aria-selected="true"] small{color:var(--on-accent);opacity:.85}
 :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
 .score{font-family:var(--f-display);font-weight:700;font-variant-numeric:tabular-nums}
 .btn{font:500 .9rem var(--f-body);color:var(--accent);background:transparent;border:1px solid var(--accent);border-radius:8px;padding:8px 12px;cursor:pointer}
 .btn:hover{background:var(--accent-soft)}
+.btn.solid{background:var(--accent);color:var(--on-accent)}
+.btn.solid:hover{opacity:.9}
+h2.sec{font-size:1.2rem;margin-top:8px}
+.note{color:var(--muted);font-size:.9rem;margin:-12px 0 0}
 .q{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
-.q .n{font:600 .8rem var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font:600 .78rem var(--f-body);letter-spacing:.05em;text-transform:uppercase;color:var(--accent)}
+.badge{border:1px solid currentColor;border-radius:999px;padding:1px 9px}
 .q p{margin:0}
+.pergunta{font-weight:600}
 .opts{display:flex;flex-direction:column;gap:8px}
-.opt{font:inherit;text-align:left;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer;display:flex;gap:10px;min-width:0}
+.opt{font:inherit;text-align:left;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer;display:flex;flex-direction:column;gap:6px;min-width:0;width:100%}
+.opt .row{display:flex;gap:10px;min-width:0}
 .opt .l{font-weight:600;color:var(--muted);flex:none;width:1.2em}
+.opt .t{min-width:0;overflow-wrap:anywhere}
+.opt .why{font-size:.88rem;color:var(--muted);padding-left:calc(1.2em + 10px)}
 .opt:hover:not([disabled]){border-color:var(--accent)}
 .opt[disabled]{cursor:default}
 .opt.ok{background:var(--ok-soft);border-color:var(--ok)}
 .opt.bad{background:var(--bad-soft);border-color:var(--bad)}
-.fb{font-size:.92rem;border-left:3px solid var(--accent);padding:2px 0 2px 12px;color:var(--fg)}
-.fb b{font-weight:600}
+.opt.ok .why{color:var(--fg)}
 pre,code{font-family:var(--f-mono);font-size:.85rem}
 pre{background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:12px;margin:0;overflow-x:auto;white-space:pre}
-.dis{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
-textarea{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;width:100%;resize:vertical;min-height:8em}
+.opt code{background:var(--code-bg);padding:1px 4px;border-radius:4px}
+textarea{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;width:100%;resize:vertical;min-height:9em}
 textarea:focus-visible{border-color:var(--accent)}
-.ans{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:12px}
+.ans{display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--line);padding-top:12px}
 .ans .hint{margin:0;color:var(--muted);font-size:.9rem}
+.ans ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
 .chk{display:flex;flex-direction:column;gap:8px}
 .chk label{display:flex;gap:10px;align-items:flex-start;cursor:pointer;min-width:0}
 .chk input{margin-top:.35em;flex:none;accent-color:var(--accent);width:1.1em;height:1.1em}
-.chk span{min-width:0;overflow-wrap:anywhere}
-.ans .res{margin:0;font-family:var(--f-display);font-weight:700;color:var(--accent)}
-h2.sec{font-size:1.2rem;margin-top:8px}
+.res{margin:0;font-family:var(--f-display);font-weight:700;color:var(--accent)}
+.final{background:var(--surface);border:2px solid var(--accent);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.final .big{font:700 2rem var(--f-display);color:var(--accent)}
+.final ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px}
 .foot{color:var(--muted);font-size:.85rem}
 @media (prefers-reduced-motion:no-preference){.opt{transition:border-color .15s,background .15s}}
 </style>
@@ -73,155 +81,422 @@ h2.sec{font-size:1.2rem;margin-top:8px}
 <main>
   <header>
     <h1>Simulados de Banco de Dados</h1>
-    <p class="sub">Três simulados para revisar a matéria: 8 questões objetivas com resposta na hora e 2 dissertativas em cada um, que você escreve e depois confere com os pontos esperados. As opções mudam de ordem a cada tentativa.</p>
+    <p class="sub">Três simulados em formato de prova prática: cenários reais, tabelas com problemas e comandos SQL com erro. Cada um tem 8 questões de múltipla escolha (0,25 ponto cada) e 2 discursivas (1,5 ponto cada), somando 5,0. A dificuldade sobe aos poucos.</p>
   </header>
   <div class="tabs" role="tablist" id="tabs"></div>
-  <div class="bar"><span class="score" id="score" aria-live="polite"></span><button class="btn" id="redo" type="button">Refazer simulado</button></div>
+  <div class="bar"><span class="score" id="score" aria-live="polite"></span><span><button class="btn" id="redo" type="button">Refazer</button> <button class="btn solid" id="fin" type="button">Finalizar e ver nota</button></span></div>
+  <h2 class="sec">Parte 1: múltipla escolha</h2>
+  <p class="note">Escolha uma alternativa. Você vê na hora se acertou e por que cada alternativa está certa ou errada.</p>
   <section id="objetivas" style="display:flex;flex-direction:column;gap:16px"></section>
-  <h2 class="sec">Questões dissertativas</h2>
+  <h2 class="sec">Parte 2: discursivas</h2>
+  <p class="note">Em cada uma, encontre exatamente dois problemas e explique como corrigiria cada um. Escreva antes de abrir o gabarito.</p>
   <section id="diss" style="display:flex;flex-direction:column;gap:16px"></section>
-  <p class="foot">Os exemplos usam um restaurante com as tabelas pedido, itens_pedido, produto e atendente. O gabarito das dissertativas traz os pontos que a resposta precisa ter, não um texto para decorar.</p>
+  <section id="final" hidden></section>
+  <p class="foot">O que você escreve fica só no seu navegador e some ao recarregar a página.</p>
 </main>
 
 <script>
+const LET = "ABCDE";
+const N = (nivel, tema, enun, perg, opts, c) => ({nivel, tema, enun, perg, opts, c});
+
 const SIMS = {
-  basico: {
-    nome: "Básico", desc: "Conceitos de base",
-    obj: [
-      {q:"O que é uma chave primária (PK)?", o:["Uma coluna que identifica cada linha da tabela de forma única","Uma coluna que pode repetir valores","Uma senha do banco de dados","Um tipo de consulta"], c:0, e:"A PK não repete e não pode ser nula. Exemplo: o id de cada pedido."},
-      {q:"O que é uma chave estrangeira (FK)?", o:["Uma coluna que liga uma tabela à chave primária de outra","Uma tabela guardada em outro servidor","Uma coluna que guarda só números","Uma cópia de segurança"], c:0, e:"A FK cria a ligação entre tabelas. Exemplo: o pedido guarda o id do atendente que o registrou."},
-      {q:"O que significa a sigla DER?", o:["Diagrama Entidade-Relacionamento","Dados Estruturados Relacionais","Documento de Entrega de Requisitos","Dicionário de Esquemas Relacionais"], c:0, e:"O DER é o desenho do banco: entidades (futuras tabelas), atributos e relacionamentos."},
-      {q:"Qual comando SQL busca dados de uma tabela?", o:["SELECT","INSERT","DELETE","CREATE"], c:0, e:"SELECT consulta. INSERT insere, UPDATE altera, DELETE apaga linhas e CREATE cria objetos como tabelas."},
-      {q:"Qual função soma os valores de uma coluna?", o:["SUM()","COUNT()","MAX()","AVG()"], c:0, e:"SUM soma, COUNT conta linhas, MAX dá o maior valor e AVG calcula a média."},
-      {q:"Para que serve o JOIN?", o:["Juntar dados de duas ou mais tabelas numa consulta","Apagar uma tabela","Criar um backup","Ordenar os resultados"], c:0, e:"O JOIN usa a relação entre PK e FK para trazer dados de tabelas diferentes, como pedido e atendente."},
-      {q:"O que o GROUP BY faz?", o:["Agrupa linhas com o mesmo valor, para calcular totais por grupo","Apaga linhas repetidas da tabela","Cria um grupo de usuários","Muda o nome de uma coluna"], c:0, e:"Exemplo: SUM(valor) com GROUP BY setor mostra o total vendido por setor."},
-      {q:"Qual comando desfaz uma alteração feita numa transação que ainda não foi confirmada?", o:["ROLLBACK","COMMIT","SELECT","DROP"], c:0, e:"ROLLBACK desfaz tudo da transação aberta; COMMIT confirma."}
-    ],
-    dis: [
-      {q:"Explique com suas palavras o que são chave primária e chave estrangeira. Dê um exemplo de cada num sistema de restaurante.", a:["<b>PK:</b> identifica cada linha de forma única, sem repetir e sem nulo. Exemplo: o id do pedido.","<b>FK:</b> coluna que referencia a PK de outra tabela e liga as duas. Exemplo: o pedido guarda o id do atendente que o registrou.","Mostrar o efeito: a FK impede registrar um pedido com atendente que não existe."]},
-      {q:"O que é normalização e por que ela é importante?", a:["Organizar as tabelas para não repetir dados, em etapas chamadas formas normais (1FN, 2FN e 3FN).","Evita dados duplicados e erros ao inserir, alterar ou apagar (anomalias).","Exemplo: em vez de repetir o nome do atendente em todo pedido, criar a tabela atendente e guardar só a FK no pedido."]}
-    ]
-  },
-  intermediario: {
-    nome: "Intermediário", desc: "Modelagem e integridade",
-    obj: [
-      {q:"Na tabela itens_pedido, a coluna id_pedido referencia a tabela pedido. Qual é o papel dessa coluna?", o:["Chave estrangeira, que garante que o item pertença a um pedido existente","Chave primária simples da tabela itens_pedido","Restrição CHECK que valida o valor do pedido","Índice usado apenas para acelerar consultas"], c:0, e:"A FK liga a tabela filha à tabela pai e impede registrar um item de um pedido que não existe. Isso é integridade referencial."},
-      {q:"Um pedido pode ter vários produtos, e um produto pode estar em vários pedidos. Como esse relacionamento N:N é implementado no modelo lógico?", o:["Criando uma tabela associativa com as chaves dos dois lados","Colocando uma lista de produtos dentro da tabela pedido","Colocando a chave do pedido na tabela produto","Fundindo pedido e produto numa única tabela"], c:0, e:"Todo N:N vira uma tabela associativa (aqui, itens_pedido) com FKs para as duas tabelas, podendo ter atributos próprios, como quantidade e preço."},
-      {q:"Uma tabela está na 3ª Forma Normal (3FN) quando:", o:["Está na 2FN e não tem dependências transitivas entre atributos não-chave","Todos os campos são do tipo texto","Não possui chave estrangeira","Tem apenas uma coluna na chave primária"], c:0, e:"1FN: valores atômicos. 2FN: sem dependência parcial da chave. 3FN: sem dependência transitiva, ou seja, atributo não-chave não depende de outro não-chave."},
-      {q:"Qual é a principal diferença entre o DER (modelo conceitual) e o modelo lógico?", o:["O DER é independente de SGBD e mostra entidades e relacionamentos; o lógico traduz isso em tabelas, colunas, chaves e restrições","O DER já define tipos de dados e índices; o lógico não","Os dois são idênticos, mudando só o nome","O modelo lógico é o script de INSERT"], c:0, e:"O conceitual descreve o negócio; o lógico mapeia para o modelo relacional (tabelas, PK, FK); o físico define tipos e detalhes do SGBD."},
-      {q:"Você quer listar todos os produtos, inclusive os que nunca foram pedidos. Qual junção usar entre produto e itens_pedido?", o:["LEFT JOIN partindo de produto","INNER JOIN","CROSS JOIN","UNION entre as duas tabelas"], c:0, e:"O LEFT JOIN mantém todas as linhas da tabela da esquerda (produto), com NULL onde não há itens. Depois, WHERE itens_pedido.id IS NULL isola os produtos sem pedido."},
-      {q:"Qual a diferença entre WHERE e HAVING?", o:["WHERE filtra linhas antes do agrupamento; HAVING filtra grupos depois do GROUP BY","São sinônimos","HAVING só funciona com UPDATE","WHERE filtra grupos; HAVING filtra linhas"], c:0, e:"Para filtrar pelo resultado de uma agregação, como SUM(valor) > 1000, usa-se HAVING. Condições sobre colunas simples vão no WHERE."},
-      {q:"Com a FK em NO ACTION (ou RESTRICT), o que acontece ao tentar excluir um pedido que já tem itens_pedido?", o:["O banco recusa a exclusão com erro de integridade","O pedido e os itens são apagados juntos","O pedido é apagado e os itens ficam com id_pedido NULL","O MySQL ignora o comando sem avisar"], c:0, e:"NO ACTION impede apagar o registro pai enquanto houver filhos. Para apagar, é preciso remover os itens antes, ou definir a FK com ON DELETE CASCADE."},
-      {q:"Você roda um UPDATE dentro de uma transação e percebe que errou a condição. Que propriedade ACID permite desfazer tudo com ROLLBACK?", o:["Atomicidade","Isolamento","Durabilidade","Consistência de índice"], c:0, e:"Atomicidade: a transação é tudo ou nada. ROLLBACK desfaz o que ainda não recebeu COMMIT."}
-    ],
-    dis: [
-      {q:"Explique o que é normalização e descreva a 1FN, a 2FN e a 3FN. Dê um exemplo de tabela de restaurante que violaria uma delas e mostre como corrigir.", a:["<b>Objetivo:</b> reduzir redundância e evitar anomalias de inserção, atualização e exclusão.","<b>1FN:</b> valores atômicos, sem campos repetidos nem listas numa célula.","<b>2FN:</b> está na 1FN e nenhum atributo depende só de parte de uma chave composta.","<b>3FN:</b> está na 2FN e nenhum atributo não-chave depende de outro não-chave (dependência transitiva).","<b>Exemplo:</b> a tabela pedido com uma coluna \"produtos\" contendo uma lista viola a 1FN. Correção: criar itens_pedido, com uma linha por produto do pedido.","<b>Outro exemplo:</b> guardar o nome do atendente dentro de pedido gera dependência transitiva. Correção: criar a tabela atendente e deixar só a FK no pedido."]},
-      {q:"Explique como a integridade dos dados é garantida num banco relacional. Cite PK, FK, CHECK e NOT NULL, com um exemplo de cada. Depois explique por que usar transação com ROLLBACK é útil em UPDATE e DELETE.", a:["<b>PK:</b> identifica cada registro de forma única. Exemplo: id do pedido.","<b>FK:</b> impede registrar um item de um pedido inexistente ou apagar um pedido que ainda tem itens (em NO ACTION).","<b>CHECK:</b> barra valores inválidos. Exemplo: quantidade maior que zero.","<b>NOT NULL:</b> obriga o preenchimento de campos essenciais.","<b>Transação:</b> permite testar a alteração e desfazê-la com ROLLBACK se algo sair errado (atomicidade), ou confirmar com COMMIT."]}
-    ]
-  },
-  sql: {
-    nome: "SQL", desc: "Consultas e comandos",
-    obj: [
-      {q:"Qual cláusula ordena o resultado de uma consulta do maior para o menor valor?", o:["ORDER BY valor DESC","GROUP BY valor DESC","SORT valor DOWN","HAVING valor DESC"], c:0, e:"ORDER BY ordena. ASC é crescente (padrão) e DESC é decrescente."},
-      {q:"Qual a diferença entre COUNT(*) e COUNT(coluna)?", o:["COUNT(*) conta todas as linhas; COUNT(coluna) ignora as linhas em que a coluna é NULL","São idênticos em qualquer caso","COUNT(*) ignora NULL; COUNT(coluna) conta tudo","COUNT(coluna) soma os valores da coluna"], c:0, e:"COUNT(*) conta linhas. COUNT(coluna) conta só os valores não nulos dessa coluna."},
-      {q:"Como filtrar corretamente as linhas em que data_cancelamento não foi preenchida?", o:["WHERE data_cancelamento IS NULL","WHERE data_cancelamento = NULL","WHERE data_cancelamento = ''","WHERE data_cancelamento == 0"], c:0, e:"NULL não é um valor, é ausência de valor. Comparações com = NULL nunca são verdadeiras; use IS NULL ou IS NOT NULL."},
-      {q:"O que acontece ao executar UPDATE produto SET preco = 10; sem cláusula WHERE?", o:["Todas as linhas da tabela recebem preco = 10","Nenhuma linha é alterada","Só a primeira linha é alterada","O MySQL pede a condição e cancela o comando"], c:0, e:"Sem WHERE, o UPDATE atinge a tabela inteira. Por isso é boa prática testar com SELECT antes e usar transação com ROLLBACK."},
-      {q:"O que retorna um INNER JOIN entre pedido e atendente?", o:["Somente as linhas que têm correspondência nas duas tabelas","Todas as linhas de pedido, com ou sem atendente","Todas as linhas das duas tabelas","O produto cartesiano das duas tabelas"], c:0, e:"INNER JOIN traz só o que casa nas duas tabelas. Para manter linhas sem correspondência, usa-se LEFT JOIN."},
-      {q:"Qual consulta lista os pedidos com valor acima da média?", o:["SELECT * FROM pedido WHERE valor > (SELECT AVG(valor) FROM pedido);","SELECT * FROM pedido WHERE valor > AVG(valor);","SELECT * FROM pedido HAVING valor > AVG;","SELECT AVG(valor) FROM pedido WHERE valor > pedido;"], c:0, e:"A média vem de uma subconsulta. Funções de agregação não podem ser usadas direto no WHERE."},
-      {q:"Para que serve o DISTINCT?", o:["Remover linhas repetidas do resultado","Ordenar o resultado","Limitar o número de linhas","Apagar duplicatas da tabela"], c:0, e:"SELECT DISTINCT setor FROM produto lista cada setor uma só vez. Ele age no resultado da consulta, não apaga nada da tabela."},
-      {q:"Qual consulta mostra só os atendentes que venderam mais de 1000 no total?", o:["SELECT id_atendente, SUM(valor) FROM pedido GROUP BY id_atendente HAVING SUM(valor) > 1000;","SELECT id_atendente, SUM(valor) FROM pedido WHERE SUM(valor) > 1000 GROUP BY id_atendente;","SELECT id_atendente FROM pedido HAVING valor > 1000;","SELECT id_atendente, SUM(valor) FROM pedido GROUP BY SUM(valor) > 1000;"], c:0, e:"O filtro sobre o total precisa vir depois do agrupamento, então usa HAVING. WHERE não aceita SUM()."}
-    ],
-    dis: [
-      {q:"Explique a diferença entre INNER JOIN e LEFT JOIN. Dê um exemplo de consulta em que o LEFT JOIN é necessário.", a:["<b>INNER JOIN:</b> só retorna linhas com correspondência nas duas tabelas.","<b>LEFT JOIN:</b> retorna todas as linhas da tabela da esquerda e preenche com NULL o lado direito quando não há correspondência.","<b>Quando usar:</b> para achar o que não tem relação, como produtos que nunca foram pedidos.","<pre>SELECT p.nome\nFROM produto p\nLEFT JOIN itens_pedido i ON i.id_produto = p.id\nWHERE i.id IS NULL;</pre>"]},
-      {q:"Escreva uma consulta que mostre o total vendido por setor, somente dos setores com total acima de 5000, do maior para o menor. Explique por que ela usa HAVING e não WHERE.", a:["<pre>SELECT s.nome, SUM(i.quantidade * i.preco_unitario) AS total\nFROM itens_pedido i\nJOIN produto p ON p.id = i.id_produto\nJOIN setor s ON s.id = p.id_setor\nGROUP BY s.nome\nHAVING SUM(i.quantidade * i.preco_unitario) > 5000\nORDER BY total DESC;</pre>","<b>Por que HAVING:</b> o filtro é sobre o resultado de uma agregação (a soma), que só existe depois do GROUP BY. O WHERE roda antes do agrupamento e não enxerga o SUM().","Os nomes das tabelas e colunas podem variar; o que se avalia é a estrutura: JOINs, GROUP BY, HAVING e ORDER BY."]}
-    ]
-  }
+/* ===================== SIMULADO 1 ===================== */
+s1: { nome:"Simulado 1", desc:"Escola, loja, clínica, livraria",
+obj:[
+N("Fácil","Relacionamentos N:N e conversão para o modelo relacional",
+[{p:"Uma escola de idiomas modelou seu banco com estas tabelas:"},{code:"ALUNO(id_aluno PK, nome, id_turma)\nTURMA(id_turma PK, idioma, horario)"},{p:"A escola passou a permitir que um aluno faça várias turmas ao mesmo tempo, e cada turma continua tendo vários alunos. Para matricular um aluno em duas turmas, a secretaria hoje precisa cadastrá-lo duas vezes, com ids diferentes. Isso já gerou histórico de pagamentos separado para a mesma pessoa."}],
+"Qual alteração resolve o problema sem duplicar os alunos?",
+[["Remover id_turma de ALUNO e criar MATRICULA(id_aluno, id_turma), com PK composta e FKs para ALUNO e TURMA.","Correta. Um N:N vira tabela associativa; cada matrícula é uma linha, e o aluno existe uma vez só."],
+ ["Transformar o campo nome em chave primária de ALUNO.","Nome repete (homônimos) e não resolve o vínculo com várias turmas."],
+ ["Adicionar as colunas id_turma2 e id_turma3 em ALUNO.","Limita a 3 turmas, gera nulos e é um grupo repetitivo (fere a 1FN)."],
+ ["Remover id_turma de ALUNO e colocar id_aluno como FK em TURMA.","Inverte o 1:N: cada turma passaria a ter um único aluno."],
+ ["Guardar em ALUNO os ids das turmas separados por vírgula.","Valor não atômico: não dá para criar FK nem consultar com segurança."]],0),
+
+N("Fácil","Integridade referencial (chave estrangeira)",
+[{p:"Numa loja online existem as tabelas:"},{code:"CLIENTE(id_cliente PK, nome)\nPEDIDO(id_pedido PK, id_cliente, data_pedido)"},{p:"O sistema aceitou gravar um pedido com id_cliente = 999, que não existe em CLIENTE. O relatório de pedidos por cliente passou a mostrar pedidos \"sem dono\"."}],
+"Qual alteração na estrutura impede que isso volte a acontecer?",
+[["ALTER TABLE pedido ADD CONSTRAINT uq_cli UNIQUE (id_cliente);","UNIQUE permitiria só um pedido por cliente e não verifica se o cliente existe."],
+ ["ALTER TABLE pedido ADD CONSTRAINT ck_cli CHECK (id_cliente > 0);","O CHECK valida o valor, mas não consulta a tabela CLIENTE; 999 continuaria passando."],
+ ["ALTER TABLE pedido MODIFY id_cliente INT NOT NULL;","Impede nulo, mas não impede um cliente inexistente."],
+ ["ALTER TABLE pedido ADD CONSTRAINT fk_ped_cli FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente);","Correta. A FK exige que todo id_cliente do pedido exista em CLIENTE. (Pedidos órfãos já gravados precisam ser corrigidos antes de criar a FK.)"],
+ ["ALTER TABLE cliente ADD CONSTRAINT fk_cli_ped FOREIGN KEY (id_cliente) REFERENCES pedido(id_cliente);","Sentido invertido: faria o cliente depender do pedido, e a coluna referenciada precisaria ser chave/índice em PEDIDO."]],3),
+
+N("Fácil","Modelo físico: tipos de dados",
+[{p:"Na tabela de produtos de um mercado, o campo preco foi criado assim:"},{code:"PRODUTO(id_produto INT PK, nome VARCHAR(60), preco VARCHAR(10))\n-- valores gravados como '12,50', '100,00', '20,00'"},{p:"A consulta SELECT SUM(preco) FROM produto retorna valores muito menores que o esperado, e ORDER BY preco coloca '100,00' antes de '20,00'."}],
+"Qual correção é mais adequada?",
+[["Trocar o tipo de preco para INT.","Perde os centavos."],
+ ["Trocar o tipo de preco para DECIMAL(10,2).","Correta. Tipo numérico exato: soma e ordena como número e mantém os centavos."],
+ ["Trocar o tipo de preco para FLOAT.","Numérico, mas aproximado: pode gerar diferenças de centavos em valores monetários."],
+ ["Manter VARCHAR e exigir que a digitação use ponto no lugar da vírgula.","Continua texto: a ordenação segue alfabética e depende da disciplina de quem digita."],
+ ["Trocar o tipo de preco para TEXT.","Continua texto, só que maior."]],1),
+
+N("Intermediário","Normalização e redundância",
+[{p:"Uma loja guarda seus pedidos numa única tabela:"},{code:"Pedido | Cliente | Cidade_Cliente | Produto | Preco\n101    | João    | Santos         | Mouse   | 50\n101    | João    | Santos         | Teclado | 120\n102    | Maria   | Campinas       | Mouse   | 50"},{p:"Quando um cliente muda de cidade ou o preço de um produto é reajustado, é preciso editar várias linhas, e já apareceram valores divergentes para o mesmo dado."}],
+"Qual reorganização é mais adequada?",
+[["PEDIDO(pedido, cliente, cidade) e PRODUTO(produto, preco), sem outra tabela.","Perde a ligação entre pedido e produto, e cliente/cidade ainda repetem a cada pedido."],
+ ["Manter a tabela única e acrescentar um id sequencial como PK.","O id identifica a linha, mas a repetição de cidade e preço continua."],
+ ["CLIENTE(id_cliente, nome, cidade) e PEDIDO(id_pedido, id_cliente, produto, preco).","Resolve o cliente, mas produto e preço continuam repetidos em cada pedido."],
+ ["PEDIDO_CLIENTE(pedido, cliente, cidade) e PEDIDO_PRODUTO(pedido, produto, preco).","A cidade repete a cada pedido do mesmo cliente e o preço a cada pedido do mesmo produto."],
+ ["CLIENTE, PRODUTO, PEDIDO(id_pedido, id_cliente) e ITEM_PEDIDO(id_pedido, id_produto), com FKs.","Correta. Cada informação fica em um só lugar e o pedido liga cliente e produtos pelos itens."]],4),
+
+N("Intermediário","SQL: erro de cláusula (WHERE x HAVING)",
+[{p:"Um analista quer listar o nome de cada cliente e o total gasto, mostrando só quem gastou mais de 500. Ele escreveu:"},{code:"SELECT c.nome, SUM(p.valor) AS total\nFROM cliente c\nJOIN pedido p ON p.id_cliente = c.id_cliente\nWHERE SUM(p.valor) > 500\nGROUP BY c.nome;"},{p:"O MySQL retorna erro de uso inválido de função de agregação."}],
+"Qual correção resolve o problema?",
+[["Trocar o JOIN por LEFT JOIN.","O erro está na cláusula do filtro, não no tipo de junção."],
+ ["Trocar GROUP BY por ORDER BY.","Sem o agrupamento, o SUM deixa de somar por cliente."],
+ ["Retirar a condição do WHERE e colocar HAVING SUM(p.valor) > 500 depois do GROUP BY.","Correta. O filtro sobre o total só existe depois do agrupamento, e isso é papel do HAVING."],
+ ["Mover a condição SUM(p.valor) > 500 para o ON do JOIN.","O ON também roda antes do agrupamento e não aceita agregação."],
+ ["Remover o alias AS total.","O alias não tem relação com o erro."]],2),
+
+N("Intermediário","Chave primária incorreta",
+[{p:"Numa faculdade, a tabela de matrículas foi criada assim:"},{code:"MATRICULA(cpf_aluno, id_disciplina, semestre, nota)\nPRIMARY KEY (cpf_aluno)"},{p:"Ao matricular um aluno em uma segunda disciplina, o banco recusa o registro por chave duplicada. A faculdade permite que o aluno refaça a mesma disciplina em semestres seguintes."}],
+"Qual definição de chave primária atende à regra?",
+[["PRIMARY KEY (cpf_aluno, id_disciplina, semestre)","Correta. Identifica cada matrícula: quem, qual disciplina e em qual semestre (permite refazer)."],
+ ["PRIMARY KEY (id_disciplina)","Só uma matrícula por disciplina em toda a tabela."],
+ ["PRIMARY KEY (cpf_aluno, id_disciplina)","Resolve a segunda disciplina, mas impede refazer a mesma disciplina em outro semestre."],
+ ["Remover a chave primária.","Libera o cadastro, mas aceita linhas duplicadas e perde a identificação."],
+ ["PRIMARY KEY (nota)","Notas se repetem e não identificam a matrícula."]],0),
+
+N("Difícil","Conversão do MER para o modelo relacional (1:1)",
+[{p:"Num MER, as entidades FUNCIONARIO e CREDENCIAL_ACESSO têm relacionamento 1:1. Regras levantadas: toda credencial pertence obrigatoriamente a um funcionário, mas nem todo funcionário possui credencial."}],
+"Na conversão para o modelo relacional, qual solução é mais adequada, evitando nulos desnecessários e sem criar tabelas extras?",
+[["Colocar id_credencial em FUNCIONARIO, aceitando nulo para quem não tem credencial.","Gera nulos e não garante que a credencial pertença a um funcionário nem que não seja dividida entre dois."],
+ ["Fundir as duas entidades numa única tabela FUNCIONARIO com colunas de credencial opcionais.","Muitos nulos, e a credencial deixa de ter identidade própria."],
+ ["Criar a tabela associativa FUNCIONARIO_CREDENCIAL com PK composta.","Funciona, mas cria uma tabela extra, o que o enunciado quer evitar."],
+ ["Colocar id_funcionario em CREDENCIAL_ACESSO como FK, NOT NULL e UNIQUE.","Correta. A FK NOT NULL garante o dono; o UNIQUE garante o 1:1; funcionários sem credencial não geram nulos."],
+ ["Colocar FKs cruzadas, uma em cada tabela.","Dependência circular: não dá para inserir o primeiro registro sem nulo."]],3),
+
+N("Difícil","Integridade referencial: ação de exclusão (ON DELETE)",
+[{p:"Num sistema de RH, as FKs foram criadas com ON DELETE CASCADE:"},{code:"FUNCIONARIO.id_depto -> DEPARTAMENTO.id_depto  (CASCADE)\nFOLHA_PAGAMENTO.id_func -> FUNCIONARIO.id_func  (CASCADE)"},{p:"Um gerente excluiu o departamento Marketing por engano. Sumiram 40 funcionários e todo o histórico de folha deles."}],
+"Qual mudança protege melhor os dados sem impedir o uso normal do sistema?",
+[["Manter CASCADE e criar um backup diário.","O backup só recupera depois, com perda do dia; o desenho continua destrutivo."],
+ ["Trocar CASCADE por RESTRICT nas duas FKs e adotar exclusão lógica (coluna ativo) em vez de DELETE.","Correta. O banco recusa apagar quem tem dependentes, e a \"exclusão\" vira inativação com histórico preservado."],
+ ["Trocar CASCADE por SET NULL nas duas FKs.","Deixa funcionários sem departamento e folhas sem funcionário: registros órfãos, sem sentido."],
+ ["Remover as FKs.","Apagar deixa de afetar outras tabelas, mas a integridade referencial deixa de existir."],
+ ["Manter CASCADE e deixar o DELETE só para o gerente, por permissão.","Reduz o risco, mas quem tiver permissão ainda apaga tudo em cascata."]],1)
+],
+dis:[
+{nivel:"Intermediário", tema:"Tabelas mal estruturadas e dados duplicados",
+ enun:[{p:"Uma clínica registra as consultas numa única tabela:"},{code:"CONSULTA(id_consulta PK, paciente, telefone_paciente, medico, especialidade, data, valor)\n\n1 | Ana Lima | 1199999-0001 | Dr. Paulo | Cardiologia | 2026-03-01 | 200\n2 | Ana Lima | 1199999-0002 | Dr. Paulo | Cardiologia | 2026-04-10 | 200\n3 | Bruno S. | 1188888-0003 | Dra. Rita | Dermatologia| 2026-04-11 | 180"}],
+ perg:"Aponte exatamente DOIS problemas desta estrutura e explique como corrigiria cada um.",
+ erros:[
+  ["Dados do paciente repetidos e divergentes (o telefone de Ana aparece de dois jeitos).","Criar a tabela PACIENTE(id_paciente PK, nome, telefone) e deixar só a FK id_paciente em CONSULTA."],
+  ["A especialidade depende do médico, não da consulta (dependência transitiva) e se repete a cada consulta.","Criar MEDICO(id_medico PK, nome, especialidade) e usar FK id_medico em CONSULTA."],
+  ["Paciente e médico identificados pelo nome (texto): homônimos se confundem e um erro de digitação cria \"outra pessoa\".","Usar chave substituta (id) ou documento único como PK e referenciar por FK."],
+  ["Sem FKs, o banco não impede consulta com paciente ou médico inexistente.","Definir FKs de CONSULTA para PACIENTE e MEDICO."]]},
+{nivel:"Difícil", tema:"Comandos SQL com erros, relacionamento inadequado e FK ausente",
+ enun:[{p:"Uma livraria criou o banco com o script abaixo. Regra do negócio: um livro pode ter mais de um autor."},{code:"CREATE TABLE autor (\n  id_autor INT,\n  nome VARCHAR(80)\n);\nCREATE TABLE livro (\n  id_livro INT PRIMARY KEY,\n  titulo VARCHAR(100),\n  id_autor INT,\n  preco DECIMAL(8,2)\n);\nINSERT INTO livro VALUES (1, 'Dom Casmurro', 5, 39.90);\n-- o autor 5 nunca foi cadastrado e o INSERT funcionou"}],
+ perg:"Aponte exatamente DOIS problemas e explique como corrigiria cada um.",
+ erros:[
+  ["A tabela autor não tem chave primária: aceita ids repetidos e não pode ser referenciada por FK.","Declarar id_autor INT PRIMARY KEY."],
+  ["livro.id_autor não é FK, por isso o INSERT com autor inexistente funcionou.","Criar FOREIGN KEY (id_autor) REFERENCES autor(id_autor) (nos livros novos e depois de corrigir os órfãos)."],
+  ["O relacionamento 1:N (um autor por livro) contraria a regra de vários autores: é N:N.","Remover id_autor de livro e criar LIVRO_AUTOR(id_livro, id_autor) com PK composta e duas FKs."],
+  ["O preço aceita valores negativos ou nulos.","Adicionar CHECK (preco > 0) e NOT NULL."]]}
+]},
+
+/* ===================== SIMULADO 2 ===================== */
+s2: { nome:"Simulado 2", desc:"Oficina, cursos, biblioteca",
+obj:[
+N("Fácil","Levantamento de requisitos e relacionamento 1:N",
+[{p:"Em uma entrevista, o dono de uma oficina informou: \"Cada cliente pode trazer vários veículos. Um veículo pertence a um único cliente cadastrado. Toda ordem de serviço é aberta para um veículo.\""}],
+"Qual estrutura lógica representa corretamente essas informações?",
+[["CLIENTE(id_cliente, nome, id_veiculo) e VEICULO(id_veiculo, placa).","Cada cliente teria um único veículo, contrariando a regra."],
+ ["CLIENTE(id_cliente, nome); VEICULO(id_veiculo, placa, id_cliente FK); ORDEM_SERVICO(id_os, data, id_veiculo FK).","Correta. A FK fica no lado \"muitos\" (veículo), e a OS chega ao cliente pelo veículo."],
+ ["CLIENTE, VEICULO(id_veiculo, placa) e ORDEM_SERVICO(id_os, id_cliente, id_veiculo), sem vínculo entre cliente e veículo.","Permite abrir OS com um cliente que não é dono do veículo."],
+ ["CLIENTE_VEICULO(id_cliente, id_veiculo) como tabela associativa N:N.","Permitiria vários donos por veículo, e a regra diz um único."],
+ ["Uma tabela ORDEM_SERVICO(id_os, nome_cliente, placa) com tudo junto.","Repete cliente e veículo a cada OS e não separa as entidades."]],1),
+
+N("Fácil","Modelo conceitual, lógico e físico",
+[{p:"Uma equipe entregou ao DBA um diagrama com as caixas ALUNO e CURSO, um losango MATRICULA ligando as duas, cardinalidade N:N e os atributos desenhados em elipses (nome, data, nota). O diagrama não traz tipos de dados, chaves nem tabelas. O DBA foi orientado a criar o banco no MySQL a partir dele."}],
+"Qual é a conclusão mais adequada?",
+[["O diagrama basta: o MySQL gera as tabelas direto a partir do MER.","O SGBD não executa MER; ele executa comandos SQL."],
+ ["Falta apenas criar índices nas colunas.","Índices são refinamento do modelo físico, ainda distante."],
+ ["Falta apenas escolher o nome do banco.","O nome não é o que impede a criação."],
+ ["O diagrama é conceitual: é preciso convertê-lo no modelo lógico (tabelas, PKs, FKs e a tabela associativa do N:N) e depois definir tipos e restrições no modelo físico.","Correta. Cada etapa acrescenta detalhe até chegar ao script SQL."],
+ ["Basta incluir os tipos de dados no diagrama para ele ficar executável.","Tipos são do físico, mas ainda faltariam as tabelas, as chaves e a tabela associativa."]],3),
+
+N("Fácil","Dicionário de dados e tipos",
+[{p:"O dicionário de dados de um cadastro traz:"},{code:"Campo: cpf | Tipo: INT | Obrigatório: sim | Exemplo: 01234567890"},{p:"Ao usar o sistema, alguns CPFs são rejeitados com \"Out of range value\", e os que começam com zero aparecem com 10 dígitos."}],
+"Qual alteração no dicionário e na tabela resolve melhor?",
+[["Trocar INT por BIGINT.","Resolve o estouro, mas continua perdendo o zero à esquerda."],
+ ["Trocar INT por DECIMAL(11,0).","Também é numérico: o zero à esquerda continua sendo perdido."],
+ ["Trocar INT por CHAR(11).","Correta. CPF é identificador, não número para cálculo: texto de tamanho fixo preserva os zeros."],
+ ["Trocar INT por VARCHAR(255).","Guarda os zeros, mas aceita valores de qualquer tamanho, sem refletir o formato documentado."],
+ ["Trocar INT por FLOAT.","Impreciso e inadequado para identificadores."]],2),
+
+N("Intermediário","Atributo de relacionamento N:N",
+[{p:"Numa plataforma de cursos online, ALUNO e CURSO têm relacionamento N:N. A plataforma precisa registrar a data de matrícula e a nota final de cada aluno em cada curso."}],
+"Onde esses dois atributos devem ficar no modelo relacional?",
+[["Na tabela associativa MATRICULA(id_aluno, id_curso, data_matricula, nota_final).","Correta. Esses dados pertencem ao par aluno–curso, e não a um dos dois isoladamente."],
+ ["Na tabela ALUNO.","Um aluno em vários cursos teria várias notas numa só linha."],
+ ["Na tabela CURSO.","Um curso com vários alunos teria várias notas numa só linha."],
+ ["Nas duas tabelas, ALUNO e CURSO.","Duplica o dado e permite versões divergentes."],
+ ["Numa tabela NOTA sem ligação com aluno ou curso.","Sem FKs não se sabe de quem é a nota."]],0),
+
+N("Intermediário","SQL: erro de junção",
+[{p:"Para listar todos os clientes com a quantidade de pedidos, inclusive quem nunca comprou (com zero), foi escrita a consulta:"},{code:"SELECT c.nome, COUNT(p.id_pedido) AS qtd\nFROM cliente c\nINNER JOIN pedido p ON p.id_cliente = c.id_cliente\nGROUP BY c.id_cliente, c.nome;"},{p:"Os clientes sem pedido não aparecem no resultado."}],
+"Qual correção atende ao que foi pedido?",
+[["Trocar INNER JOIN por RIGHT JOIN.","Passaria a manter pedidos sem cliente, e não clientes sem pedido."],
+ ["Trocar por LEFT JOIN e usar COUNT(*).","COUNT(*) contaria 1 para quem não tem pedido (a linha com NULL existe)."],
+ ["Trocar por CROSS JOIN.","Combinaria todo cliente com todo pedido."],
+ ["Manter o INNER JOIN e acrescentar HAVING COUNT(*) >= 0.","A condição é sempre verdadeira, e o INNER JOIN já descartou quem não tem pedido."],
+ ["Trocar por LEFT JOIN mantendo COUNT(p.id_pedido).","Correta. O LEFT JOIN preserva todos os clientes e COUNT(p.id_pedido) ignora o NULL, dando 0."]],4),
+
+N("Intermediário","Integridade: UNIQUE, NOT NULL e CHECK",
+[{p:"Uma tabela de usuários foi criada assim:"},{code:"USUARIO(id_usuario INT PRIMARY KEY, email VARCHAR(80), idade INT)"},{p:"O sistema aceitou dois cadastros com o mesmo e-mail, um e-mail em branco (NULL) e um usuário com idade -5."}],
+"Qual conjunto de alterações corrige os três problemas?",
+[["Acrescentar PRIMARY KEY (email), além da PK existente.","Uma tabela só pode ter uma chave primária."],
+ ["UNIQUE e NOT NULL em email e CHECK (idade BETWEEN 0 AND 120).","Correta. UNIQUE barra repetidos, NOT NULL barra vazios e CHECK valida a faixa da idade."],
+ ["Criar uma FK em email.","FK exige uma tabela referenciada; não valida unicidade nem faixa."],
+ ["Usar DEFAULT 0 em idade.","DEFAULT só preenche quando falta valor; não impede -5."],
+ ["Criar um índice comum em email.","Índice simples acelera busca e não impede duplicidade."]],1),
+
+N("Difícil","Normalização (2FN) com regra de negócio",
+[{p:"Uma loja tem a tabela de itens de pedido:"},{code:"ITEM_PEDIDO(id_pedido, id_produto, quantidade, nome_produto, preco_produto)\nPRIMARY KEY (id_pedido, id_produto)"},{p:"Regras: o histórico dos pedidos deve preservar o preço praticado na data da venda, e deve ser possível renomear um produto sem editar vários registros."}],
+"Qual reorganização atende às duas regras?",
+[["Mover nome_produto e preco_produto para PRODUTO e retirar os dois de ITEM_PEDIDO.","Resolve o nome, mas perde o preço histórico: reajustar o produto alteraria o passado."],
+ ["Manter tudo e acrescentar UNIQUE (id_produto, preco_produto).","Não elimina a repetição do nome nem resolve o renomeio."],
+ ["Criar PRODUTO(id_produto, nome, preco_atual) e deixar em ITEM_PEDIDO(id_pedido, id_produto, quantidade, preco_unitario).","Correta. O nome depende só do produto (2FN); o preço de venda é fato do item e fica congelado."],
+ ["Mover só o preço para PRODUTO e manter nome_produto no item.","Inverte a lógica: preserva a redundância do nome e perde o histórico de preço."],
+ ["Dividir ITEM_PEDIDO em uma tabela por ano.","Não trata redundância; só espalha os dados."]],2),
+
+N("Difícil","Inconsistência no modelo relacional",
+[{p:"O banco de uma biblioteca tem:"},{code:"LIVRO(id_livro PK, titulo, id_autor FK)\nLEITOR(id_leitor PK, nome)\nEMPRESTIMO(id_emprestimo PK, id_livro FK, id_leitor FK, data_emp, data_dev)"},{p:"A biblioteca tem várias cópias do mesmo título. Hoje o empréstimo registra apenas o título, e o sistema permitiu emprestar a mesma cópia física a dois leitores ao mesmo tempo, pois não dá para saber qual cópia saiu."}],
+"Qual alteração resolve a inconsistência?",
+[["Criar UNIQUE em EMPRESTIMO.id_livro.","Impediria qualquer segundo empréstimo do título, mesmo em datas diferentes."],
+ ["Acrescentar uma coluna quantidade em LIVRO.","Controla quantas existem, mas não identifica qual cópia está emprestada."],
+ ["Duplicar a linha de LIVRO para cada cópia.","Repete título e autor em várias linhas."],
+ ["Criar EXEMPLAR(id_exemplar PK, id_livro FK) e fazer EMPRESTIMO referenciar id_exemplar.","Correta. Cada cópia ganha identidade própria, e o empréstimo aponta para a cópia."],
+ ["Tornar data_dev obrigatória (NOT NULL).","Obrigaria devolução já no registro e não resolve a identificação."]],3)
+],
+dis:[
+{nivel:"Intermediário", tema:"Chaves estrangeiras ausentes e relacionamentos inadequados",
+ enun:[{p:"Uma escola tem as tabelas:"},{code:"PROFESSOR(id_professor PK, nome, email)\nTURMA(id_turma PK, nome, professor VARCHAR(60))\n\n-- exemplo de dados em TURMA\n1 | 3º A | Carlos Silva\n2 | 3º B | Carlos Silva\n3 | 3º C | carlos silva"},{p:"Regra: uma turma pode ter até dois professores (co-docência) e um professor leciona várias turmas."}],
+ perg:"Aponte exatamente DOIS problemas e explique como corrigiria cada um.",
+ erros:[
+  ["O professor da turma é texto livre, sem FK: a mesma pessoa aparece de formas diferentes (\"Carlos Silva\" e \"carlos silva\") e o banco não garante que exista em PROFESSOR.","Remover a coluna texto e referenciar PROFESSOR por FK."],
+  ["O relacionamento 1:N não comporta dois professores por turma: a regra é N:N.","Criar TURMA_PROFESSOR(id_turma, id_professor) com PK composta e duas FKs."],
+  ["O nome serve de identificação e pode haver homônimos.","Identificar por id_professor (PK) e deixar o nome só como atributo."],
+  ["O e-mail do professor não tem UNIQUE: duas linhas podem ter o mesmo e-mail.","Adicionar UNIQUE e NOT NULL em email."]]},
+{nivel:"Difícil", tema:"Comandos SQL com erros e modelo inconsistente",
+ enun:[{p:"Um sistema de pedidos foi criado com o script:"},{code:"CREATE TABLE produto (\n  id_produto INT PRIMARY KEY,\n  nome VARCHAR(50),\n  preco DECIMAL(8,2)\n);\nCREATE TABLE pedido (\n  id_pedido INT PRIMARY KEY,\n  data_pedido DATE\n);\nCREATE TABLE item_pedido (\n  id_pedido INT,\n  id_produto INT,\n  quantidade INT,\n  PRIMARY KEY (id_pedido),\n  FOREIGN KEY (id_produto) REFERENCES produto(id_produto)\n);"},{p:"Ao tentar gravar um pedido com dois produtos diferentes, o banco recusa o segundo item."}],
+ perg:"Aponte exatamente DOIS problemas e explique como corrigiria cada um.",
+ erros:[
+  ["A PK de item_pedido é só id_pedido: cada pedido só pode ter um item.","Usar PRIMARY KEY (id_pedido, id_produto)."],
+  ["item_pedido.id_pedido não é FK para pedido: aceita itens de pedidos inexistentes.","Adicionar FOREIGN KEY (id_pedido) REFERENCES pedido(id_pedido)."],
+  ["quantidade aceita nulo, zero ou negativo.","NOT NULL e CHECK (quantidade > 0)."],
+  ["O item não guarda o preço praticado; reajustar o produto altera o histórico.","Adicionar preco_unitario em item_pedido."]]}
+]},
+
+/* ===================== SIMULADO 3 ===================== */
+s3: { nome:"Simulado 3", desc:"SQL, integridade e conversão",
+obj:[
+N("Fácil","SQL: violação de restrição",
+[{p:"Dada a tabela e o comando:"},{code:"CREATE TABLE cliente (\n  id_cliente INT PRIMARY KEY,\n  nome VARCHAR(50) NOT NULL,\n  email VARCHAR(80) UNIQUE\n);\nINSERT INTO cliente (id_cliente, nome, email)\nVALUES (1, 'Ana', 'ana@x.com'), (2, 'Bia', 'ana@x.com');"},{p:"O comando falha e nenhuma linha é gravada."}],
+"Qual é a causa da falha?",
+[["O id_cliente está repetido.","Os ids são 1 e 2, diferentes."],
+ ["O campo nome foi deixado em branco.","Os dois nomes estão preenchidos."],
+ ["A restrição UNIQUE de email foi violada pelo e-mail repetido.","Correta. As duas linhas têm o mesmo e-mail, e o comando todo é recusado."],
+ ["Falta uma chave estrangeira.","A tabela não precisa de FK para gravar."],
+ ["O MySQL não aceita várias linhas no mesmo INSERT.","Aceita normalmente."]],2),
+
+N("Fácil","Atributo multivalorado",
+[{p:"Num cadastro de clientes existe a coluna telefones, preenchida assim:"},{code:"CLIENTE(id_cliente PK, nome, telefones)\n1 | Ana | 11 9999-1111; 11 8888-2222"},{p:"A empresa quer permitir quantos telefones o cliente tiver e conseguir buscar o cliente por qualquer um deles."}],
+"Qual solução é mais adequada?",
+[["Criar TELEFONE(id_telefone PK, id_cliente FK, numero) e remover a coluna telefones de CLIENTE.","Correta. Um cliente com vários telefones é 1:N; cada número vira uma linha pesquisável."],
+ ["Criar telefone1, telefone2 e telefone3 em CLIENTE.","Limita a quantidade e gera nulos; a busca precisa olhar três colunas."],
+ ["Manter a coluna e buscar com LIKE '%número%'.","Lento, impreciso e sem garantia de formato."],
+ ["Definir telefones como PRIMARY KEY.","Uma PK precisa ser única e atômica."],
+ ["Trocar o tipo da coluna por ENUM.","ENUM tem lista fixa de valores; não serve para números livres."]],0),
+
+N("Fácil","Integridade de domínio (CHECK)",
+[{p:"Num sistema de pedidos:"},{code:"PEDIDO(id_pedido INT PK, data DATE, status VARCHAR(10))"},{p:"O status só deve assumir ABERTO, PAGO ou CANCELADO, mas o banco já gravou valores como \"abert\" e \"pgo\"."}],
+"Qual alteração impede esses valores?",
+[["UNIQUE em status.","Permitiria só um pedido por status."],
+ ["PRIMARY KEY composta (id_pedido, status).","Identifica a linha, mas não limita os valores permitidos."],
+ ["Trocar status para CHAR(1).","Continua aceitando qualquer letra."],
+ ["Criar uma FK em status sem tabela de referência.","FK exige uma tabela referenciada, que não existe no modelo."],
+ ["CHECK (status IN ('ABERTO','PAGO','CANCELADO')).","Correta. O banco recusa qualquer outro valor."]],4),
+
+N("Intermediário","SQL: segurança em alterações de dados",
+[{p:"Uma analista precisava reajustar em 10% apenas os produtos da categoria 'Bebidas'. No MySQL (InnoDB, autocommit ligado), executou:"},{code:"UPDATE produto SET preco = preco * 1.10;"},{p:"Todos os preços da tabela foram alterados e já estão gravados."}],
+"Qual prática teria evitado o problema?",
+[["Executar o comando duas vezes para conferir.","Aplicaria o reajuste em dobro."],
+ ["Incluir WHERE categoria = 'Bebidas', rodar dentro de START TRANSACTION, conferir com SELECT e só então dar COMMIT (ou ROLLBACK).","Correta. O filtro limita o alvo e a transação permite desfazer antes de gravar."],
+ ["Executar TRUNCATE na tabela antes do UPDATE.","Apagaria todos os dados."],
+ ["Criar uma chave primária na coluna preco.","Não tem relação com o filtro e preços se repetem."],
+ ["Usar DELETE nos produtos e inseri-los de novo.","Perigoso, e viola FKs de outras tabelas."]],1),
+
+N("Intermediário","SQL: junção sem condição",
+[{p:"Para listar o nome do cliente e o número do pedido, foi escrita a consulta:"},{code:"SELECT c.nome, p.id_pedido\nFROM cliente c, pedido p;"},{p:"Com 100 clientes e 500 pedidos, o resultado traz 50.000 linhas, com clientes ligados a pedidos de outras pessoas."}],
+"Qual correção resolve o problema?",
+[["Acrescentar DISTINCT ao SELECT.","Remove linhas idênticas, mas as combinações erradas continuam."],
+ ["Acrescentar LIMIT 500.","Corta a quantidade e mantém combinações erradas."],
+ ["Acrescentar GROUP BY c.nome.","Esconde o problema e pode dar erro com colunas não agrupadas."],
+ ["Ligar as tabelas: JOIN pedido p ON p.id_cliente = c.id_cliente.","Correta. A condição de junção faz cada pedido aparecer só com o seu cliente."],
+ ["Usar UNION entre as duas tabelas.","UNION empilha resultados com o mesmo número de colunas; não liga cliente a pedido."]],3),
+
+N("Intermediário","Integridade referencial: regras de exclusão",
+[{p:"Regras de uma loja: ao excluir um pedido, os itens dele devem ser excluídos junto; nenhum cliente que já tenha pedidos pode ser excluído."}],
+"Quais ações de exclusão nas FKs atendem às regras?",
+[["Ambas as FKs com ON DELETE CASCADE.","Excluir um cliente apagaria seus pedidos, contra a regra."],
+ ["Ambas as FKs com ON DELETE SET NULL.","Itens ficariam sem pedido e pedidos sem cliente."],
+ ["item_pedido.id_pedido com ON DELETE CASCADE e pedido.id_cliente com ON DELETE RESTRICT.","Correta. Os itens acompanham o pedido, e o banco recusa excluir cliente com pedidos."],
+ ["item_pedido.id_pedido com RESTRICT e pedido.id_cliente com CASCADE.","É o inverso do que a regra pede."],
+ ["Sem FKs, controlando tudo no código da aplicação.","Perde a garantia do banco: qualquer acesso direto quebra as regras."]],2),
+
+N("Difícil","Conversão de relacionamento ternário",
+[{p:"Num MER de uma construtora, FORNECEDOR, PRODUTO e PROJETO se ligam por um relacionamento ternário \"fornece\": um fornecedor pode entregar o mesmo produto a vários projetos, e um projeto pode receber o mesmo produto de fornecedores diferentes. Cada entrega tem sua quantidade."}],
+"Qual conversão preserva essas informações no modelo relacional?",
+[["FORNECIMENTO(id_fornecedor, id_produto, id_projeto, quantidade), PK composta pelas três FKs.","Correta. Só a combinação dos três identifica a entrega e guarda a quantidade dela."],
+ ["Três tabelas N:N binárias: fornecedor–produto, produto–projeto e fornecedor–projeto.","Perde-se qual fornecedor entregou qual produto a qual projeto."],
+ ["Colocar id_projeto e id_fornecedor em PRODUTO.","Fixaria um projeto e um fornecedor por produto."],
+ ["FORNECIMENTO(id_fornecedor, id_produto, quantidade) e PROJETO_PRODUTO(id_projeto, id_produto).","A entrega deixa de estar ligada ao projeto específico."],
+ ["Colocar o atributo quantidade em PRODUTO.","A quantidade varia a cada entrega, não é do produto."]],0),
+
+N("Difícil","Normalização (3FN) com regra de negócio",
+[{p:"Uma empresa tem:"},{code:"FUNCIONARIO(id_func PK, nome, id_cargo, nome_cargo, salario_base_cargo, salario)\n\n1 | Ana   | 10 | Analista | 5000 | 5600\n2 | Bruno | 10 | Analista | 5000 | 5000\n3 | Clara | 10 | Analista | 4800 | 5200"},{p:"Quando o salário-base de um cargo muda, é preciso atualizar dezenas de linhas, e já há valores divergentes (Clara). O campo salario é o salário real, que pode ser diferente do base por acordo individual."}],
+"Qual reorganização corrige a estrutura sem perder informação?",
+[["Definir PRIMARY KEY (id_func, id_cargo).","Identifica a linha, mas a repetição do cargo continua."],
+ ["Criar UNIQUE em nome_cargo.","Impediria vários funcionários no mesmo cargo."],
+ ["Criar CARGO(id_cargo, nome, salario_base) e mover para lá também o salario individual.","Perde o salário real de cada pessoa, que é um acordo individual."],
+ ["Manter a estrutura e fazer UPDATE manual nas linhas a cada reajuste.","Mantém a redundância e o risco de divergência."],
+ ["Criar CARGO(id_cargo, nome, salario_base), deixar em FUNCIONARIO só id_cargo (FK) e o salario individual.","Correta. O nome e o salário-base dependem do cargo (3FN); o salário real depende do funcionário."]],4)
+],
+dis:[
+{nivel:"Intermediário", tema:"Comandos SQL com erros e chaves ausentes",
+ enun:[{p:"Um sistema de vendas foi criado com este script:"},{code:"CREATE TABLE cliente (\n  id INT,\n  nome VARCHAR(50),\n  cpf VARCHAR(11)\n);\nCREATE TABLE pedido (\n  id INT PRIMARY KEY,\n  id_cliente INT,\n  total DECIMAL(10,2)\n);\nINSERT INTO pedido VALUES (1, 77, -50.00);\n-- o INSERT funcionou: não existe cliente 77 e o total é negativo"}],
+ perg:"Aponte exatamente DOIS problemas e explique como corrigiria cada um.",
+ erros:[
+  ["A tabela cliente não tem chave primária: aceita ids repetidos e não pode ser referenciada por FK.","Declarar id INT PRIMARY KEY."],
+  ["pedido.id_cliente não é FK: o pedido para o cliente 77, que não existe, foi aceito.","FOREIGN KEY (id_cliente) REFERENCES cliente(id)."],
+  ["Não há restrição sobre total: aceita valor negativo.","CHECK (total >= 0)."],
+  ["cpf pode ser repetido ou vazio.","UNIQUE e NOT NULL no cpf."]]},
+{nivel:"Difícil", tema:"Modelo conceitual e relacional inconsistentes",
+ enun:[{p:"MER de uma clínica: cada consulta tem exatamente um paciente e um médico; um médico pode ter várias especialidades. O modelo relacional gerado foi:"},{code:"PACIENTE(id_paciente PK, nome)\nMEDICO(id_medico PK, nome, especialidades VARCHAR(200))\nCONSULTA(id_consulta PK, data, id_paciente, nome_medico)\n\n-- MEDICO: 1 | Dr. Paulo | 'Cardiologia, Clínica Geral'"}],
+ perg:"Aponte exatamente DOIS problemas em relação ao MER e explique como corrigiria cada um.",
+ erros:[
+  ["especialidades guarda vários valores numa coluna (multivalorado): fere a 1FN e dificulta filtrar por especialidade.","Criar ESPECIALIDADE e MEDICO_ESPECIALIDADE(id_medico, id_especialidade), N:N com PK composta."],
+  ["CONSULTA referencia o médico pelo nome (texto) em vez de id_medico: homônimos se confundem e não há FK.","Trocar nome_medico por id_medico com FK para MEDICO."],
+  ["CONSULTA.id_paciente não é FK nem obrigatório: o MER diz que a consulta tem exatamente um paciente.","FOREIGN KEY (id_paciente) REFERENCES paciente + NOT NULL."],
+  ["Também falta NOT NULL em id_medico (o MER exige um médico por consulta).","NOT NULL em id_medico com a FK."]]}
+]}
 };
 
 const $ = (s) => document.querySelector(s);
-const letters = "ABCD";
-let current = "basico", answered = 0, correct = 0;
-
-function shuffle(a){ a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function el(tag, cls, text){ const e=document.createElement(tag); if(cls) e.className=cls; if(text!==undefined) e.textContent=text; return e; }
-function isCode(t){ return /^SELECT |^UPDATE /.test(t); }
+const SQLSTART = /^(ALTER|SELECT|UPDATE|CREATE|DELETE|INSERT|PRIMARY KEY|CHECK|UNIQUE|JOIN)\b/;
+const fmt = (n) => n.toFixed(2).replace(".", ",");
+let current = "s1", answers = [], dis = [];
 
-function updateScore(total){
-  $("#score").textContent = `Acertos: ${correct} de ${answered} respondidas (${total} no total)`;
+function renderBlocks(parent, blocks){
+  blocks.forEach(b => parent.appendChild(b.code !== undefined ? el("pre", null, b.code) : el("p", null, b.p)));
+}
+function partial(){
+  const sim = SIMS[current];
+  const acertos = answers.filter(a => a && a.ok).length;
+  const dpts = dis.reduce((s, d) => s + d.pts, 0);
+  return {acertos, nota: acertos*0.25 + dpts, resp: answers.filter(Boolean).length, total: sim.obj.length};
+}
+function updateScore(){
+  const p = partial();
+  $("#score").textContent = `Nota parcial: ${fmt(p.nota)} de 5,00 · ${p.resp}/${p.total} objetivas respondidas`;
 }
 
 function renderSim(id){
-  current = id; answered = 0; correct = 0;
-  const sim = SIMS[id];
+  current = id; const sim = SIMS[id];
+  answers = new Array(sim.obj.length).fill(null);
+  dis = sim.dis.map(() => ({pts:0}));
+  $("#final").hidden = true;
   const box = $("#objetivas"); box.replaceChildren();
-  updateScore(sim.obj.length);
-  sim.obj.forEach((item, qi) => {
+  sim.obj.forEach((q, qi) => {
     const card = el("article","q");
-    card.appendChild(el("span","n",`Questão ${qi+1} de ${sim.obj.length}`));
-    card.appendChild(el("p",null,item.q));
-    const opts = el("div","opts");
-    const fb = el("div","fb"); fb.hidden = true;
-    const order = shuffle(item.o.map((t,i)=>({t, ok:i===item.c})));
-    const btns = [];
-    order.forEach((o, oi) => {
-      const b = el("button","opt"); b.type="button";
-      b.appendChild(el("span","l",letters[oi]));
-      const txt = el(isCode(o.t)?"code":"span",null,o.t); txt.style.minWidth="0"; txt.style.overflowWrap="anywhere";
-      b.appendChild(txt);
+    const meta = el("div","meta");
+    meta.append(el("span",null,`Questão ${qi+1} de 10`), el("span","badge",q.nivel), el("span",null,"0,25 ponto"));
+    card.appendChild(meta);
+    renderBlocks(card, q.enun);
+    card.appendChild(el("p","pergunta",q.perg));
+    const opts = el("div","opts"); const btns = [];
+    q.opts.forEach((o, oi) => {
+      const b = el("button","opt"); b.type = "button";
+      const row = el("div","row"); row.appendChild(el("span","l",LET[oi]));
+      row.appendChild(el(SQLSTART.test(o[0]) ? "code" : "span","t",o[0]));
+      b.appendChild(row);
+      const why = el("div","why"); why.hidden = true; why.textContent = o[1]; b.appendChild(why);
       b.addEventListener("click", () => {
-        btns.forEach((x,xi)=>{ x.disabled=true; if(order[xi].ok) x.classList.add("ok"); });
-        if(!o.ok) b.classList.add("bad");
-        answered++; if(o.ok) correct++;
-        fb.replaceChildren(el("b",null, o.ok ? "Certo. " : "Não foi essa. "), document.createTextNode(item.e));
-        fb.hidden = false; updateScore(sim.obj.length);
+        if(answers[qi]) return;
+        answers[qi] = {ok: oi === q.c, pick: oi};
+        btns.forEach((x, xi) => { x.disabled = true; x.querySelector(".why").hidden = false; if(xi === q.c) x.classList.add("ok"); });
+        if(oi !== q.c) b.classList.add("bad");
+        updateScore();
       });
       btns.push(b); opts.appendChild(b);
     });
-    card.appendChild(opts); card.appendChild(fb); box.appendChild(card);
+    card.appendChild(opts); box.appendChild(card);
   });
   const dbox = $("#diss"); dbox.replaceChildren();
   sim.dis.forEach((d, di) => {
-    const card = el("article","dis");
-    card.appendChild(el("span","n",`Dissertativa ${di+1}`));
-    card.lastChild.style.cssText="font:600 .8rem var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)";
-    card.appendChild(el("p",null,d.q)).style.margin="0";
+    const card = el("article","q");
+    const meta = el("div","meta");
+    meta.append(el("span",null,`Discursiva ${di+1} de 2`), el("span","badge",d.nivel), el("span",null,"1,5 ponto"));
+    card.appendChild(meta);
+    renderBlocks(card, d.enun);
+    card.appendChild(el("p","pergunta",d.perg));
     const ta = document.createElement("textarea");
-    ta.id = `resp-${current}-${di}`; ta.rows = 7; ta.placeholder = "Escreva sua resposta aqui antes de ver o gabarito.";
-    ta.setAttribute("aria-label", `Resposta da dissertativa ${di+1}`);
+    ta.id = `resp-${id}-${di}`; ta.placeholder = "Escreva aqui os dois problemas e a correção de cada um.";
+    ta.setAttribute("aria-label", `Resposta da discursiva ${di+1}`);
     card.appendChild(ta);
-    const btn = el("button","btn","Ver gabarito e conferir"); btn.type="button"; btn.style.alignSelf="flex-start";
+    const btn = el("button","btn","Ver gabarito e conferir"); btn.type = "button"; btn.style.alignSelf = "flex-start";
     const ans = el("div","ans"); ans.hidden = true;
-    const pts = d.a.filter(h => !h.startsWith("<pre>"));
-    ans.appendChild(el("p","hint","Compare com a sua resposta e marque os pontos que você cobriu."));
-    const list = el("div","chk");
-    const result = el("p","res");
-    const upd = () => { const n = list.querySelectorAll("input:checked").length; result.textContent = `Você cobriu ${n} de ${pts.length} pontos.`; };
-    pts.forEach((h, pi) => {
-      const lab = el("label"); const cb = document.createElement("input"); cb.type="checkbox"; cb.id=`pt-${current}-${di}-${pi}`;
-      cb.addEventListener("change", upd);
-      const span = el("span"); span.innerHTML = h; lab.append(cb, span); list.appendChild(lab);
-    });
-    ans.appendChild(list);
-    d.a.filter(h => h.startsWith("<pre>")).forEach(h => ans.appendChild(el("pre",null,h.replace(/<\/?pre>/g,""))));
-    ans.appendChild(result); upd();
+    ans.appendChild(el("p","hint","Há mais de dois erros possíveis. Vale qualquer par de erros reais, cada um com uma correção adequada."));
+    const ul = el("ul");
+    d.erros.forEach(e => { const li = el("li"); const b1 = el("b",null,"Erro: "); li.append(b1, document.createTextNode(e[0]+" ")); const b2 = el("b",null,"Correção: "); li.append(b2, document.createTextNode(e[1])); ul.appendChild(li); });
+    ans.appendChild(ul);
+    ans.appendChild(el("p","hint","Agora se avalie (cada item vale 0,375 ponto):"));
+    const chk = el("div","chk");
+    const labels = ["Identifiquei um primeiro erro real.","Expliquei uma correção adequada para ele.","Identifiquei um segundo erro real, diferente do primeiro.","Expliquei uma correção adequada para o segundo."];
+    const res = el("p","res");
+    const upd = () => { const n = chk.querySelectorAll("input:checked").length; dis[di].pts = n*0.375; res.textContent = `Esta discursiva: ${fmt(n*0.375)} de 1,50`; updateScore(); };
+    labels.forEach((t, li) => { const lab = el("label"); const cb = document.createElement("input"); cb.type="checkbox"; cb.id=`pt-${id}-${di}-${li}`; cb.addEventListener("change", upd); lab.append(cb, el("span",null,t)); chk.appendChild(lab); });
+    ans.append(chk, res); res.textContent = "Esta discursiva: 0,00 de 1,50";
     btn.addEventListener("click", () => { ans.hidden = !ans.hidden; btn.textContent = ans.hidden ? "Ver gabarito e conferir" : "Esconder gabarito"; });
     card.append(btn, ans); dbox.appendChild(card);
   });
-  document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.id===id)));
+  document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.id === id)));
+  updateScore();
   try{ history.replaceState(null,"","#"+id); }catch(e){}
 }
 
+function finalizar(){
+  const sim = SIMS[current], p = partial(), box = $("#final");
+  box.replaceChildren(); box.hidden = false;
+  const card = el("div","final");
+  card.appendChild(el("h2",null,"Resultado"));
+  card.appendChild(el("div","big",`${fmt(p.nota)} de 5,00`));
+  card.appendChild(el("p",null,`Objetivas: ${p.acertos} de ${p.total} (${fmt(p.acertos*0.25)} de 2,00). Discursivas: ${fmt(dis.reduce((s,d)=>s+d.pts,0))} de 3,00.`));
+  const fracos = [];
+  sim.obj.forEach((q, i) => { if(!answers[i] || !answers[i].ok) fracos.push(q.tema + (answers[i] ? "" : " (não respondida)")); });
+  sim.dis.forEach((d, i) => { if(dis[i].pts < 1.5) fracos.push(d.tema + " (discursiva)"); });
+  if(fracos.length){
+    card.appendChild(el("h3",null,"Conteúdos para revisar"));
+    const ul = el("ul"); fracos.forEach(t => ul.appendChild(el("li",null,t))); card.appendChild(ul);
+    card.appendChild(el("p","foot","Releia a explicação de cada alternativa nessas questões e depois use \"Refazer\" para tentar de novo."));
+  } else card.appendChild(el("p",null,"Sem pontos fracos neste simulado. Passe para o próximo."));
+  box.appendChild(card);
+  box.scrollIntoView({behavior:"smooth", block:"start"});
+}
+
 const tabs = $("#tabs");
-Object.entries(SIMS).forEach(([id, s], i) => {
-  const b = el("button","tab"); b.type="button"; b.dataset.id=id; b.setAttribute("role","tab");
-  b.appendChild(document.createTextNode(`Simulado ${i+1}: ${s.nome}`));
-  b.appendChild(el("small",null,s.desc));
+Object.entries(SIMS).forEach(([id, s]) => {
+  const b = el("button","tab"); b.type="button"; b.dataset.id = id; b.setAttribute("role","tab");
+  b.append(document.createTextNode(s.nome), el("small",null,s.desc));
   b.addEventListener("click", () => { renderSim(id); window.scrollTo({top:0}); });
   tabs.appendChild(b);
 });
 $("#redo").addEventListener("click", () => { renderSim(current); window.scrollTo({top:0}); });
-window.addEventListener("hashchange", () => { const h=location.hash.slice(1); if(SIMS[h] && h!==current) renderSim(h); });
-renderSim(SIMS[location.hash.slice(1)] ? location.hash.slice(1) : "basico");
+$("#fin").addEventListener("click", finalizar);
+window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if(SIMS[h] && h !== current) renderSim(h); });
+renderSim(SIMS[location.hash.slice(1)] ? location.hash.slice(1) : "s1");
 </script>
 
 </body>

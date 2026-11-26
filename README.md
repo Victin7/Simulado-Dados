@@ -1,20 +1,27 @@
 # Simulado-Dados
 
-Simulados de Banco de Dados para estudar para a prova. Abra o `index.html` no navegador.
+Simulados de Modelagem de Banco de Dados no formato de prova prática. As questões usam cenários reais, tabelas mal estruturadas e comandos SQL com erro, em vez de perguntas de definição. Abra o `index.html` no navegador.
 
-## Conteúdo
+## Estrutura de cada simulado
 
-| Simulado | Foco |
-|----------|------|
-| 1. Básico | PK, FK, DER, SELECT, SUM, JOIN, GROUP BY e ROLLBACK |
-| 2. Intermediário | Tabela associativa, normalização (1FN a 3FN), DER x modelo lógico, WHERE x HAVING, integridade referencial e transações |
-| 3. SQL | ORDER BY, COUNT, IS NULL, UPDATE sem WHERE, INNER e LEFT JOIN, subconsulta, DISTINCT e HAVING |
+| Parte | Questões | Valor |
+|-------|----------|-------|
+| 1. Múltipla escolha | 8, com 5 alternativas (A a E) e uma correta | 0,25 ponto cada (2,0 no total) |
+| 2. Discursivas | 2, com cenário problemático: apontar exatamente dois erros e explicar a correção de cada um | 1,5 ponto cada (3,0 no total) |
 
-Cada simulado tem 8 questões objetivas, com correção e explicação na hora, e 2 dissertativas, que o aluno escreve e depois confere marcando os pontos da resposta esperada. As alternativas mudam de ordem a cada tentativa.
+Nota máxima: 5,0. A dificuldade sobe ao longo do simulado: fácil, intermediário e difícil.
 
-Os exemplos usam um restaurante com as tabelas `pedido`, `itens_pedido`, `produto` e `atendente`.
+## Simulados
+
+| Simulado | Cenários | Conteúdos |
+|----------|----------|-----------|
+| 1 | Escola, loja, mercado, faculdade, RH, clínica, livraria | Relacionamentos N:N e 1:1, FK, tipos de dados, normalização, WHERE x HAVING, PK composta, ON DELETE |
+| 2 | Oficina, cursos online, cadastro, biblioteca, escola | Requisitos, modelo conceitual x lógico x físico, dicionário de dados, atributo de relacionamento, LEFT JOIN, UNIQUE/CHECK, 2FN |
+| 3 | Cadastro, pedidos, construtora, empresa, clínica | Violação de restrições, atributo multivalorado, CHECK, transações, JOIN sem condição, regras de exclusão, relacionamento ternário, 3FN |
 
 ## Como usar
 
-1. Baixe o repositório ou o arquivo `index.html`.
-2. Abra o arquivo no navegador. Não precisa instalar nada.
+1. Baixe o repositório ou o arquivo `index.html` e abra no navegador (ou use o link do GitHub Pages).
+2. Na parte 1, clique na alternativa: o simulado mostra se acertou e explica por que cada alternativa está certa ou errada.
+3. Na parte 2, escreva sua resposta, abra o gabarito e marque o que você acertou.
+4. Clique em **Finalizar e ver nota** para ver a nota de 0 a 5 e os conteúdos para revisar.
