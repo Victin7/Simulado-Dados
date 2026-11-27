@@ -1,4 +1,12 @@
-# Simulado-Dados
+<!-- topo:inicio -->
+<p align="center">
+  <img src="./.github/readme/banner.svg" alt="Simulado de Dados — Questões com cenários reais, tabelas mal estruturadas e SQL com erro para treinar para a prova." width="100%"/>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/HTML-0f171d?style=for-the-badge&logo=html5&logoColor=white" alt="HTML"/> <img src="https://img.shields.io/badge/CSS-0f171d?style=for-the-badge&logo=css3&logoColor=white" alt="CSS"/> <img src="https://img.shields.io/badge/JavaScript-0f171d?style=for-the-badge&logo=javascript&logoColor=white" alt="JavaScript"/> <img src="https://img.shields.io/badge/SQL-0f171d?style=for-the-badge&logo=postgresql&logoColor=white" alt="SQL"/>
+</p>
+<!-- topo:fim -->
 
 Simulados de Modelagem de Banco de Dados no formato de prova prática. As questões usam cenários reais, tabelas mal estruturadas e comandos SQL com erro, em vez de perguntas de definição. Abra o `index.html` no navegador.
 
